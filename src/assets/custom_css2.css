@@ -1,0 +1,286 @@
+
+
+
+ .section-heading {
+  margin: 0 auto 8px auto;
+  text-align: center;
+  max-width: 800px;
+}
+
+.section-description {
+  margin: 0 auto 20px auto;
+  text-align: center;
+  color: #000000;
+  font-size: 1.2rem;
+  max-width: 800px;
+}
+
+.secondsec2 {
+  background: linear-gradient(270deg, #caf7ca, #96dc96, #caf7ca);
+  background-size: 600% 600%;
+  animation: gradientFlow 8s ease infinite;
+  padding-top: 120px; /* ⬅️ increased to avoid overlap */
+  padding-bottom: 80px;
+  color: #222;
+}
+.secondsec3 {
+  background: linear-gradient(270deg, #caf7ca, #96dc96, #caf7ca);
+  background-size: 600% 600%;
+  animation: gradientFlow 8s ease infinite;
+  padding-top: 0; /* ⬅️ increased to avoid overlap */
+  padding-bottom: 80px;
+  color: #222;
+}
+
+
+
+ .cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px; /* ✅ Margin-like space from start & end */
+}
+
+  .half-card {
+    flex: 0 0 calc(50% - 10px); /* exactly 2 cards per row with gap */
+    box-sizing: border-box;
+  }
+
+  .card-img-top {
+    height: 293px;
+    object-fit: cover;
+    object-position: center;
+  }
+  .secondsec3:first-of-type {
+  padding-top: 120px; /* Only the first section gets extra space */
+}
+
+
+  @media (max-width: 768px) {
+    .half-card {
+      flex: 0 0 100%;
+    }
+  }
+
+  
+/* Navbar base styles */
+#mainNavbar {
+  transition: background-color 0.4s ease;
+  background-color: transparent !important;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+
+/* Navbar background on hover */
+#mainNavbar:hover {
+  background-color: #cff1b7 !important;
+}
+
+/* Brand (webdev) hover gradient effect */
+#navc:hover {
+  background: linear-gradient(to right, #d8cb16, #6d6603); /* gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Navbar links */
+.navbar-nav .nav-link {
+  position: relative;
+  color: rgb(0, 0, 0);
+  font-size: 37px;
+  transition: color 0.3s ease;
+  font-family: sans-serif;
+}
+
+/* Navbar links hover: gradient text */
+.navbar-nav .nav-link:hover {
+  background: linear-gradient(to right, #d8cb16, #6d6603);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Underline setup (initially hidden) */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to right, #d8cb16, #6d6603);
+  transition: width 0.3s ease;
+}
+
+/* Underline on hover */
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.modal-dialog.custom-carousel-modal {
+  max-width: 1490px;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 800px;
+  object-fit: cover;
+}
+
+@media (min-width: 992px) {
+  #navbarNav {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+html {
+  height: 100%;
+  scroll-padding-top: calc(4.5rem - 1px);
+  html {
+  scroll-behavior: smooth;
+}
+
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.page-section {
+  padding: 8rem 0;
+}
+
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.btn-xl {
+  padding: 1.25rem 2.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10rem;
+}
+
+
+
+
+
+/* Custom Navbar Style */
+#mainNav {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  background-color:  #c0f3c0;
+  transition: background-color 0.2s ease;
+}
+#mainNav .navbar-brand {
+  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 700;
+  color: #000000;
+}
+#mainNav .navbar-nav .nav-item .nav-link {
+  color: #000000;
+  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 700;
+  font-size: 19px;
+  padding: 0.75rem 0;
+}
+#mainNav .navbar-nav .nav-item .nav-link:hover,
+#mainNav .navbar-nav .nav-item .nav-link:active {
+  color: #e4f31c;
+}
+#mainNav .navbar-nav .nav-item .nav-link.active {
+  color:  #e4f31c !important;
+}
+
+/* Responsive navbar styles */
+@media (min-width: 992px) {
+  #mainNav {
+    box-shadow: none;
+    background-color: transparent;
+  }
+  #mainNav .navbar-brand {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  #mainNav .navbar-brand:hover {
+    background: linear-gradient(to right, #faff91, #e4f31c, #b2a800);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+    transition: ease 0.4s;
+  }
+  #mainNav .navbar-nav .nav-item .nav-link {
+    color: rgba(0, 0, 0, 0.7);
+    padding: 0 1rem;
+  }
+  #mainNav .navbar-nav .nav-item .nav-link:hover {
+    color: #e4f31c;
+
+  }
+
+  #mainNav .navbar-nav .nav-item:last-child .nav-link {
+    padding-right: 0;
+  }
+  #mainNav.navbar-shrink {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    background-color: #c0f3c0;
+  }
+  #mainNav.navbar-shrink .navbar-brand {
+    color: #000000;
+  }
+  #mainNav.navbar-shrink .navbar-brand:hover {
+    color: #e4f31c;
+  }
+  #mainNav.navbar-shrink .navbar-nav .nav-item .nav-link {
+    color: #000000;
+  }
+  #mainNav.navbar-shrink .navbar-nav .nav-item .nav-link:hover {
+    color: #e4f31c;
+  }
+}
+/* background:  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;" */
+/* Masthead */
+
+
+
+
+    .btn-dark{
+      background-color:  #9c9207 ;
+      color: white;
+    }
+    .btn-dark:hover{
+
+  background-color:  black;
+
+    /* background on hover */
+  cursor: pointer;
+}
+
+
+
+
