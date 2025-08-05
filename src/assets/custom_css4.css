@@ -7,11 +7,7 @@
       text-align: center;
       border-radius: 1rem;
     }
-    .carousel-inner img {
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+
     .btn-accept {
       background-color: #6d6603;
       color: white;

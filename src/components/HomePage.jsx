@@ -124,7 +124,7 @@ new window.SimpleLightbox('#portfolio a.portfolio-box');
 
 
 
-<Recentcard />
+<Recentcard/>
 
 
 

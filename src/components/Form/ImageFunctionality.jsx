@@ -28,7 +28,7 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
   const removeImage = (index) => {
     const updated = images.filter((_, i) => i !== index);
     setImages(updated);
-    setWarning(""); // Clear warning when image is removed
+    setWarning("");
   };
 
   return (
@@ -40,19 +40,20 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
         accept="image/*"
         onChange={handleImageChange}
         multiple
+        key={images.length} // to reset input
       />
       <small className="text-muted">
         You can select multiple images. Max {MAX_IMAGES}, each under {MAX_SIZE_MB}MB.
       </small>
 
       <div className="d-flex flex-wrap gap-3 mt-3">
-        {images.map((img, index) => (
-          <div key={index} className="image-wrapper position-relative">
-            <img src={URL.createObjectURL(img)} alt={`Preview ${index}`} />
+        {images.map((img, i) => (
+          <div key={i} className="image-wrapper position-relative">
+            <img src={URL.createObjectURL(img)} alt={`Preview ${i}`} />
             <button
               type="button"
               className="remove-btn"
-              onClick={() => removeImage(index)}
+              onClick={() => removeImage(i)}
             >
               ×
             </button>

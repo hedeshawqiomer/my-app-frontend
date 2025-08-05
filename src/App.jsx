@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import CityCategories from './components/CityCatgories';
 import UserPost from './components/UserPost'; // ✅ Add this
-import Admin from "./components/admin"
+import Admin from "./components/Admin"
 
 function App() {
   return (

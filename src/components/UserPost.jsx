@@ -3,10 +3,11 @@ import Navbar from "./Layouts/Navbar";
 import Footer from "./Layouts/Footer";
 import "../assets/custom_css3.css";
 import ImageUploader from "./Form/ImageFunctionality";
-import  BasicInfo from "./Form/BasicInfo"
-import CitySelection  from "./Form/CitySelection"
-import LocationForm from "./Form/LocationForm"
-import ExplanationCard  from "./Form/ExplanationCard";
+import BasicInfo from "./Form/BasicInfo";
+import CitySelection from "./Form/CitySelection";
+import LocationForm from "./Form/LocationForm";
+import ExplanationCard from "./Form/ExplanationCard";
+import { addPost } from "../utills/postStore.js";
 import Offcanvas from "./Layouts/Offcanvas";
 
 function UserPost() {
@@ -19,7 +20,6 @@ function UserPost() {
   const [showDistrict, setShowDistrict] = useState(false);
   const [images, setImages] = useState([]);
   const [warning, setWarning] = useState("");
-
 
   const cityDistricts = {
     Erbil: ["Soran", "Shaqlawa", "Mergasor", "Koya"],
@@ -43,89 +43,90 @@ function UserPost() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
- 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("✅ Submit clicked!");
 
+    if (images.length < 4) {
+      setWarning("Please upload at least 4 images.");
+      return;
+    }
 
+    setWarning("");
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+    const newPost = {
+      name,
+      phone,
+      email,
+      location,
+      city,
+      district,
+      images: images.map((file) => URL.createObjectURL(file)) // 🔁 PREVIEW URLs
+    };
 
-  if (images.length < 4) {
-    setWarning("Please upload at least 4 images.");
-    return; // stop form submission
-  }
+    const savedPost = addPost(newPost);
+    console.log("✅ Post saved to localStorage:", savedPost);
 
-  setWarning(""); // clear warning if valid
-  console.log({ name, phone, email, location, city, district, images });
-  
-  // continue form submission (e.g., send to backend)
-};
-
+    // Clear the form
+    setName("");
+    setPhone("");
+    setEmail("");
+    setLocation("");
+    setCity("");
+    setDistrict("");
+    setShowDistrict(false);
+    setImages([]);
+  };
 
   return (
     <>
       <Navbar />
-
       <div className="container py-5">
         <div className="row justify-content-center align-items-start">
-          {/* Left Info Section */}
-        <div className="col-lg-5 col-md-10 mb-4 sticky-info">
-  <ExplanationCard />
-</div>
-
-
-          {/* Right Form Section */}
+          <div className="col-lg-5 col-md-10 mb-4 sticky-info">
+            <ExplanationCard />
+          </div>
           <div className="col-lg-6 col-md-10">
             <div className="card shadow p-4 mt-5">
               <h3 className="text-success fw-bold mb-3">Share a Destination</h3>
               <form onSubmit={handleSubmit}>
-<BasicInfo
-  name={name}
-  setName={setName}
-  phone={phone}
-  setPhone={setPhone}
-  email={email}
-  setEmail={setEmail}
-/>
-
-
-
-<ImageUploader
-  images={images}
-  setImages={setImages}
-  warning={warning}
-  setWarning={setWarning}
-/>
-
-
-
-               <LocationForm location={location} setLocation={setLocation} />
-
-
-<CitySelection
-  city={city}
-  setCity={setCity}
-  district={district}
-  setDistrict={setDistrict}
-  showDistrict={showDistrict}
-  setShowDistrict={setShowDistrict}
-  cityDistricts={cityDistricts}
-/>
-
-
-
+                <BasicInfo
+                  name={name}
+                  setName={setName}
+                  phone={phone}
+                  setPhone={setPhone}
+                  email={email}
+                  setEmail={setEmail}
+                />
+                <ImageUploader
+                  images={images}
+                  setImages={setImages}
+                  warning={warning}
+                  setWarning={setWarning}
+                />
+                <LocationForm location={location} setLocation={setLocation} />
+                <CitySelection
+                  city={city}
+                  setCity={setCity}
+                  district={district}
+                  setDistrict={setDistrict}
+                  showDistrict={showDistrict}
+                  setShowDistrict={setShowDistrict}
+                  cityDistricts={cityDistricts}
+                />
                 <div className="d-grid">
-                  <button className="btn btn-success btn-lg" type="submit">Submit Post</button>
+                  <button className="btn btn-success btn-lg" type="submit">
+                    Submit Post
+                  </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-
       <Offcanvas />
-
-      <Footer />    </>
+      <Footer />
+    </>
   );
 }
 
