@@ -9,6 +9,8 @@ import LocationForm from "./Form/LocationForm";
 import ExplanationCard from "./Form/ExplanationCard";
 import { addPost } from "../utills/postStore.js";
 import Offcanvas from "./Layouts/Offcanvas";
+import { useNavigate } from "react-router-dom";
+
 
 function UserPost() {
   const [name, setName] = useState("");
@@ -20,10 +22,12 @@ function UserPost() {
   const [showDistrict, setShowDistrict] = useState(false);
   const [images, setImages] = useState([]);
   const [warning, setWarning] = useState("");
+  const navigate = useNavigate();
+
 
   const cityDistricts = {
     Erbil: ["Soran", "Shaqlawa", "Mergasor", "Koya"],
-    Sulaimani: ["Chamchamal", "Halabja", "Penjwen", "Qaladze"],
+    Sulaimani: ["Chamchamal", "Tasluja", "Penjwen", "Qaladze"],
     Duhok: ["Akre", "Zakho", "Amadiya", "Simele"],
     Halabja: ["Byara", "Tawella"],
     Kirkuk: ["Daquq", "Hawija", "Riyadh", "Abbasi"]
@@ -76,6 +80,9 @@ function UserPost() {
     setDistrict("");
     setShowDistrict(false);
     setImages([]);
+
+    navigate("/SubmittedPosts");
+
   };
 
   return (
@@ -88,7 +95,15 @@ function UserPost() {
           </div>
           <div className="col-lg-6 col-md-10">
             <div className="card shadow p-4 mt-5">
-              <h3 className="text-success fw-bold mb-3">Share a Destination</h3>
+              <h3 style={{
+          fontSize: "37px",
+          fontFamily: "sans-serif",
+          background: "linear-gradient(to right, #d8cb16, #6d6603)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          color: "transparent",
+        }}className="text-success fw-bold mb-3">Share a Destination</h3>
               <form onSubmit={handleSubmit}>
                 <BasicInfo
                   name={name}

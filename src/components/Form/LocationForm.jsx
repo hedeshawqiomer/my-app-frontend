@@ -10,7 +10,9 @@ function GetLocationField({ location, setLocation }) {
       (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
-        setLocation(`Lat: ${lat}, Lng: ${lon}`);
+     // GetLocationField.jsx
+setLocation(`${lat},${lon}`);
+
       },
       (error) => {
         alert("Unable to retrieve your location.");

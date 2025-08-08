@@ -57,7 +57,7 @@ return (
                 <i className="bi bi-geo-alt-fill"></i> View on Map
               </button>
               <div className="d-flex justify-content-between align-items-center">
-                <div className="text-warning">★★★☆☆</div>
+           
                 <small className="text-muted">2/5/2025</small>
               </div>
             </div>

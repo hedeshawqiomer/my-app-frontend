@@ -22,15 +22,32 @@ export function addPost(post) {
 }
 
 // Accept a post
-export function acceptPost(id) {
-  const posts = getPosts().map(post =>
-    post.id === id ? { ...post, status: "accepted" } : post
-  );
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-}
 
 // Delete a post
 export function deletePost(id) {
   const posts = getPosts().filter(post => post.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
 }
+
+// src/utills/postStore.js
+
+// src/utills/postStore.js
+export function acceptPost(id) {
+  const posts = getPosts().map(post =>
+    post.id === id
+      ? { ...post, status: "accepted", acceptedAt: new Date().toISOString() }
+      : post
+  );
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+}
+
+export const getAcceptedPosts = () => {
+  const posts = JSON.parse(localStorage.getItem("submitted_posts") || "[]");
+  return posts
+    .filter(p => p.status === "accepted")
+    .sort((a, b) => new Date(b.acceptedAt) - new Date(a.acceptedAt));
+};
+
+
+
+

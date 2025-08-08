@@ -43,7 +43,7 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
         key={images.length} // to reset input
       />
       <small className="text-muted">
-        You can select multiple images. Max {MAX_IMAGES}, each under {MAX_SIZE_MB}MB.
+        You can select multiple images. Max {MAX_IMAGES}.
       </small>
 
       <div className="d-flex flex-wrap gap-3 mt-3">
@@ -67,3 +67,6 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
 }
 
 export default ImageUploader;
+
+
+    // You can select multiple images. Max {MAX_IMAGES}, each under {MAX_SIZE_MB}MB.

@@ -3,6 +3,7 @@ import HomePage from './components/HomePage';
 import CityCategories from './components/CityCatgories';
 import UserPost from './components/UserPost'; // ✅ Add this
 import Admin from "./components/Admin"
+import SubmittedPosts from './components/Form/SubmittedPosts'; // ✅ Add this
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/city-categories" element={<CityCategories />} />
       <Route path="/UserPost" element={<UserPost />} /> 
-            <Route path="/admin" element={<Admin />} />{/* ✅ Add this */}
+            <Route path="/Admin" element={<Admin />} />{/* ✅ Add this */}
+                  <Route path="/SubmittedPosts" element={<SubmittedPosts />} />
     </Routes>
   );
 }

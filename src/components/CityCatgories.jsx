@@ -1,19 +1,16 @@
 // src/components/CityCategories.jsx
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Layouts/Navbar";
 import Footer from "./Layouts/Footer";
 import Offcanvas from "./Layouts/Offcanvas";
-
-import Erbil from "./Catagories/Erbil";
-import Slemani from "./Catagories/Slemani";
-import Duhok from "./Catagories/Duhok";
-import Kirkuk from "./Catagories/Kirkuk";
-import Halbja from "./Catagories/Halbja"; // (typo in name okay if file is named like this)
-import "../assets/custom_css2.css"
+// CityCategories.jsx
+import { getAcceptedPosts } from "../utills/postStore";
+import CitySection from "./Catagories/CitySection"
+import "../assets/custom_css2.css" // one reusable component
 
 function CityCategories() {
-  const location = useLocation();
+    const location = useLocation();
 
   // 👇 Scroll to anchor on mount & when hash changes
   useEffect(() => {
@@ -87,21 +84,27 @@ function CityCategories() {
     };
   }, []);
 
+
+
+
+  const acceptedPosts = getAcceptedPosts();
+  const cities = ["Erbil", "Sulaimani", "Duhok", "Halabja", "Kirkuk"];
+
   return (
     <>
       <Navbar />
 
-      {/* 👇 Now render the actual sections (each must include the id that matches the hash) */}
-      <Erbil />     {/* inside Erbil component <section id="Erbil">… */}
-      <Slemani />   {/* <section id="Slemani">… */}
-      <Duhok />     {/* <section id="Duhok">… */}
-      <Kirkuk />    {/* <section id="Kirkuk">… */}
-      <Halbja />    {/* <section id="Halabja">… (make sure id matches link!) */}
+      {cities.map(city => (
+        <CitySection
+          key={city}
+          city={city}
+          posts={acceptedPosts.filter(p => p.city === city)}
+        />
+      ))}
 
       <Footer />
       <Offcanvas />
     </>
   );
 }
-
 export default CityCategories;

@@ -38,11 +38,10 @@ function Pendingposts() {
             <th style={{ minWidth: "250px" }}>Images</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Phone</th>
             <th>City</th>
             <th>District</th>
             <th>Location</th>
-            <th>Status</th>
+   
           </tr>
         </thead>
         <tbody id="submissionTable">
@@ -54,7 +53,7 @@ function Pendingposts() {
             pendingPosts.map((post, index) => (
               <tr key={post.id}>
                 <td>{index + 1}</td>
-                <td>
+                <td className="ps-3 justify-content-center">
                   <div className="image-scroll-container">
                     {post.images.map((img, i) => (
                       <a
@@ -70,18 +69,18 @@ function Pendingposts() {
                 </td>
                 <td>{post.name}</td>
                 <td>{post.email}</td>
-                <td>{post.phone}</td>
                 <td>{post.city}</td>
                 <td>{post.district}</td>
                 <td>
-                  <a
-                    href={`https://maps.google.com?q=${post.location}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-outline-success btn-sm ms-3"
-                  >
-                    📍 On Map
-                  </a>
+<a
+  href={`https://maps.google.com?q=${encodeURIComponent(post.location)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="btn btn-outline-success btn-sm "
+>
+  📍 On Map
+</a>
+
                 </td>
                 <td className="text-center">
                   <div className="d-flex flex-column gap-2">

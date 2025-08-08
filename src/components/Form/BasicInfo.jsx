@@ -1,6 +1,6 @@
 import React from "react";
 
-function BasicInfo({ name, setName, phone, setPhone, email, setEmail }) {
+function BasicInfo({ name, setName, email, setEmail }) {
   return (
     <>
       <div className="mb-3">
@@ -17,22 +17,11 @@ function BasicInfo({ name, setName, phone, setPhone, email, setEmail }) {
         />
       </div>
 
-      <div className="mb-3">
-        <label htmlFor="phone" className="form-label">
-          Phone Number <small className="text-body-secondary">(Optional)</small>
-        </label>
-        <input
-          type="tel"
-          className="form-control"
-          placeholder="eg: 0750 0000000"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-      </div>
+  
 
       <div className="mb-3">
         <label htmlFor="email" className="form-label">
-          Your Email
+          Your Email <small className="text-body-secondary">(Optional)</small>
         </label>
         <input
           type="email"
@@ -40,7 +29,7 @@ function BasicInfo({ name, setName, phone, setPhone, email, setEmail }) {
           placeholder="eg: ahmad.muhamed@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+       
         />
       </div>
     </>
