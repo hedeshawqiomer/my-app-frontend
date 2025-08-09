@@ -87,7 +87,7 @@ const recentPosts = getAcceptedPosts()
                       rel="noopener noreferrer"
                       className="btn btn-outline-success w-100"
                     >
-                      View on Map
+                     📍View on Map
                     </a>
                   </div>
                   <div className="card-footer d-flex justify-content-between align-items-center py-2 px-4">

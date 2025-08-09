@@ -1,45 +1,27 @@
 import React, { useEffect } from "react";
-import Footer from "./Layouts/Footer";
 import GLightbox from "glightbox";
 import BackendNavbar from "./Layouts/BackendNavbar";
 import BackendHeader from "./Layouts/BackendHeader";
 import Pendingposts from "./Layouts/Pendingposts";
+import BackendFooter from "./Layouts/BackendFooter"; // new shared footer
 import "../assets/custom_css4.css";
-import "glightbox/dist/css/glightbox.min.css"; // Don't forget this
+import "glightbox/dist/css/glightbox.min.css";
 
 function Admin() {
   useEffect(() => {
     const lightbox = GLightbox({ selector: ".glightbox" });
-
-    const cityFilter = document.getElementById("cityFilter");
-    const handleFilterChange = () => {
-      const selectedCity = cityFilter.value.toLowerCase();
-      const rows = document.querySelectorAll("#submissionTable tr");
-      rows.forEach((row) => {
-        const city = row.children[5].textContent.toLowerCase();
-        row.style.display = selectedCity === "" || city === selectedCity ? "" : "none";
-      });
-    };
-
-    if (cityFilter) {
-      cityFilter.addEventListener("change", handleFilterChange);
-    }
-
-    return () => {
-      if (cityFilter) {
-        cityFilter.removeEventListener("change", handleFilterChange);
-      }
-      lightbox.destroy();
-    };
+    return () => lightbox.destroy();
   }, []);
 
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <BackendNavbar />
-      <BackendHeader />
-      <Pendingposts />
-      <Footer />
-    </>
+      <div className="container-fluid px-3 px-md-4 flex-grow-1">
+        <BackendHeader />
+        <Pendingposts />
+      </div>
+      <BackendFooter />
+    </div>
   );
 }
 

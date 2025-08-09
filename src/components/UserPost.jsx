@@ -30,7 +30,7 @@ function UserPost() {
     Sulaimani: ["Chamchamal", "Tasluja", "Penjwen", "Qaladze"],
     Duhok: ["Akre", "Zakho", "Amadiya", "Simele"],
     Halabja: ["Byara", "Tawella"],
-    Kirkuk: ["Daquq", "Hawija", "Riyadh", "Abbasi"]
+    Kirkuk: ["Daquq", "Tuz Khurmatu" ]
   };
 
   useEffect(() => {
