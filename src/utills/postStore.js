@@ -1,53 +1,61 @@
-// src/utils/postStore.js
+// src/utills/postStore.js
 
-const STORAGE_KEY = "submitted_posts";
+const STORAGE_KEY = "posts";
 
-// Get all posts from localStorage
-export function getPosts() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  return data ? JSON.parse(data) : [];
+/* ------------ core io ------------ */
+function getRaw() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch { return []; }
+}
+function setRaw(posts) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
 }
 
-// Add a new post
+/* ------------ public api ------------ */
+export function getPosts() {
+  return getRaw();
+}
+
+export function getPendingPosts() {
+  return getRaw()
+    .filter(p => p.status === "pending")
+    .sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
+}
+
+export function getAcceptedPosts() {
+  return getRaw()
+    .filter(p => p.status === "accepted")
+    .sort((a,b) => new Date(b.acceptedAt||0) - new Date(a.acceptedAt||0));
+}
+
 export function addPost(post) {
-  const posts = getPosts();
+  const now = new Date().toISOString();
   const newPost = {
     id: Date.now(),
+    status: "pending",
+    createdAt: now,
     ...post,
-    status: "pending", // default status
-    createdAt: new Date().toISOString()
   };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([newPost, ...posts]));
+  setRaw([newPost, ...getRaw()]);
   return newPost;
 }
 
-// Accept a post
-
-// Delete a post
-export function deletePost(id) {
-  const posts = getPosts().filter(post => post.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-}
-
-// src/utills/postStore.js
-
-// src/utills/postStore.js
 export function acceptPost(id) {
-  const posts = getPosts().map(post =>
-    post.id === id
-      ? { ...post, status: "accepted", acceptedAt: new Date().toISOString() }
-      : post
+  const now = new Date().toISOString();
+  const next = getRaw().map(p =>
+    p.id === id ? { ...p, status: "accepted", acceptedAt: now } : p
   );
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+  setRaw(next);
 }
 
-export const getAcceptedPosts = () => {
-  const posts = JSON.parse(localStorage.getItem("submitted_posts") || "[]");
-  return posts
-    .filter(p => p.status === "accepted")
-    .sort((a, b) => new Date(b.acceptedAt) - new Date(a.acceptedAt));
-};
+export function updatePost(id, patch) {
+  const now = new Date().toISOString();
+  const next = getRaw().map(p =>
+    p.id === id ? { ...p, ...patch, updatedAt: now } : p
+  );
+  setRaw(next);
+}
 
-
-
-
+export function deletePost(id) {
+  setRaw(getRaw().filter(p => p.id !== id));
+}

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "./Layouts/Navbar";
-import Footer from "./Layouts/Footer";
+import Navbar from "./PublicpagesComponents/Navbar";
+import Footer from "./PublicpagesComponents/Footer";
 import "../assets/custom_css3.css";
-import ImageUploader from "./Form/ImageFunctionality";
-import BasicInfo from "./Form/BasicInfo";
-import CitySelection from "./Form/CitySelection";
-import LocationForm from "./Form/LocationForm";
-import ExplanationCard from "./Form/ExplanationCard";
-import { addPost } from "../utills/postStore.js";
-import Offcanvas from "./Layouts/Offcanvas";
+import ImageUploader from "./PublicpagesComponents/FormpageComponents/ImageFunctionality";
+import BasicInfo from "./PublicpagesComponents/FormpageComponents/BasicInfo";
+import CitySelection from "./PublicpagesComponents/FormpageComponents/CitySelection";
+import LocationForm from "./PublicpagesComponents/FormpageComponents/LocationForm";
+import ExplanationCard from "./PublicpagesComponents/FormpageComponents/ExplanationCard";
+import { addPost } from "../utills/postStore"; // Ensure this path is correct
+import Offcanvas from "./PublicpagesComponents/Offcanvas";
 import { useNavigate } from "react-router-dom";
 
 
@@ -81,7 +81,7 @@ function UserPost() {
     setShowDistrict(false);
     setImages([]);
 
-    navigate("/SubmittedPosts");
+    navigate("/submitted-posts");
 
   };
 

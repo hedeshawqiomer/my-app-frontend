@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { getAcceptedPosts } from "../../utills/postStore";
-import cityCenters from "../../utills/CityCenter";
-import { getDistanceFromLatLonInKm } from "../../utills/Geolocation";
+import { getAcceptedPosts } from "../../../utills/postStore";
+import cityCenters from "../../../utills/CityCenter";
+import { getDistanceFromLatLonInKm } from "../../../utills/Geolocation";
 
 function Recentcard() {
   const [userLocation, setUserLocation] = useState(null);

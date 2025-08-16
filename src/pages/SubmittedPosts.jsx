@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function SubmissionSuccess() {
+function SubmittedPosts() {
   return (
     <div className="container py-5 text-center">
       <h2 className="text-success mb-3">✅ Submission Received!</h2>
@@ -14,4 +14,4 @@ function SubmissionSuccess() {
   );
 }
 
-export default SubmissionSuccess;
+export default SubmittedPosts;

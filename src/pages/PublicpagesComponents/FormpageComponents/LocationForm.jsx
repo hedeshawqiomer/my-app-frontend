@@ -1,6 +1,6 @@
 import React from "react";
 
-function GetLocationField({ location, setLocation }) {
+function LocationForm({ location, setLocation }) {
   const getLocation = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser.");
@@ -44,4 +44,4 @@ setLocation(`${lat},${lon}`);
   );
 }
 
-export default GetLocationField;
+export default LocationForm;

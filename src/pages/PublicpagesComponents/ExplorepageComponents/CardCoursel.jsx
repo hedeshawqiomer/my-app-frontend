@@ -1,5 +1,5 @@
 import React from "react";
-import "../../assets/custom_css2.css"
+import "../../../assets/custom_css2.css"
 // CardCoursel.jsx
 function CardCoursel({ post }) {
   return (

@@ -1,25 +1,39 @@
+// src/pages/admin/AdminLogin.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import BackendFooter from "./Layouts/BackendFooter";
-import { loginLocal, isAuthed } from "../utills/Auth"; // <- from the helper I outlined
+import { useNavigate, useLocation } from "react-router-dom";
+import BackendFooter from "./DashboardComponents/BackendFooter";
+import { useAuth } from "../../context/AuthContext"; // <— use context
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, booted, login } = useAuth(); // <— context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // If already authed, go straight to Admin
+  // If already authed, go straight to a role-safe landing
   useEffect(() => {
-    if (isAuthed()) navigate("/Admin", { replace: true });
-  }, [navigate]);
+    if (!booted || !user) return;
+    const safe = user.role === "super" ? "/admin/accepted" : "/admin/pending";
+    navigate(safe, { replace: true });
+  }, [booted, user, navigate]);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    if (loginLocal(email, password)) {
-      navigate("/Admin", { replace: true });
-    } else {
-      alert("Invalid credentials");
+    const res = await login(email, password); // <— updates context immediately
+    if (!res.ok) {
+      alert(res.error || "Invalid credentials");
+      return;
     }
+    const role = res.role;
+    const safeDefault = role === "super" ? "/admin/accepted" : "/admin/pending";
+    const next = location.state?.next;
+    const target =
+      role === "super"
+        ? (next && next.startsWith("/admin") ? next : safeDefault)
+        : safeDefault;
+
+    navigate(target, { replace: true });
   };
 
   return (
@@ -27,17 +41,7 @@ export default function AdminLogin() {
       <main className="form-signin w-100 m-auto py-4" style={{ maxWidth: "400px" }}>
         <form onSubmit={onSubmit}>
           <h1 className="h3 mb-3 fw-bold d-flex align-items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1.5em"
-              height="1.5em"
-              fill="currentColor"
-              className="bi bi-person-check me-2"
-              viewBox="0 0 16 16"
-            >
-              <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-              <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
-            </svg>
+            {/* … your SVG … */}
             Admin Portal
           </h1>
 
@@ -72,26 +76,14 @@ export default function AdminLogin() {
           </div>
 
           <div className="form-check text-start my-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              value="remember-me"
-              id="checkDefault"
-            />
-            <label className="form-check-label" htmlFor="checkDefault">
-              Remember me
-            </label>
+            <input className="form-check-input" type="checkbox" id="checkDefault" />
+            <label className="form-check-label" htmlFor="checkDefault">Remember me</label>
           </div>
 
-          <button className="btn btn-primary w-100 py-2" type="submit">
-            Sign in
-          </button>
-
+          <button className="btn btn-primary w-100 py-2" type="submit">Sign in</button>
           <p className="mt-5 mb-3 text-body-secondary text-center">© 2025 EKurdistan</p>
         </form>
       </main>
-
-      {/* Shared footer at the bottom, no extra whitespace */}
       <BackendFooter />
     </div>
   );

@@ -1,8 +1,8 @@
-// src/components/Catagories/CitySection.jsx
+
 import React ,{useState, useEffect}from "react";
 import CardCoursel from "./CardCoursel";
-import cityCenters from "../../utills/CityCenter";
-import { getDistanceFromLatLonInKm } from "../../utills/Geolocation";
+import cityCenters from "../../../utills/CityCenter";
+import { getDistanceFromLatLonInKm } from "../../../utills/Geolocation";
 function CitySection({ city, posts }) {
       
         const [userLocation, setUserLocation] = useState(null);

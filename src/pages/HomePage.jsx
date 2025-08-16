@@ -1,10 +1,10 @@
 import React,{ useEffect } from "react";
-import Navbar  from "./Layouts/Navbar";
-import Footer from "./Layouts/Footer"
-import Header  from "./Layouts/Header";
-import MoreAbout  from "./Layouts/MoreAbout";
-import Offcanvas from "./Layouts/Offcanvas";
-import Recentcard from "./Layouts/Recentcard";
+import Navbar  from "./PublicpagesComponents/Navbar";
+import Footer from "./PublicpagesComponents/Footer"
+import Header  from "./PublicpagesComponents/HomepageComponents/Header";
+import MoreAbout  from "./PublicpagesComponents/HomepageComponents/MoreAbout";
+import Offcanvas from "./PublicpagesComponents/Offcanvas";
+import Recentcard from "./PublicpagesComponents/HomepageComponents/Recentcard";
 import '../assets/custom_css.css';
  // path correct and file exists
 function HomePage() {

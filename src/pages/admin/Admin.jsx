@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import GLightbox from "glightbox";
-import BackendNavbar from "./Layouts/BackendNavbar";
-import BackendHeader from "./Layouts/BackendHeader";
-import Pendingposts from "./Layouts/Pendingposts";
-import BackendFooter from "./Layouts/BackendFooter"; // new shared footer
+import BackendNavbar from "../PublicpagesComponents/Navbar";
+import BackendHeader from "./DashboardComponents/BackendHeader";
+import Pendingposts from "./Pendingposts";
+import BackendFooter from "./DashboardComponents/BackendFooter"; // new shared footer
 import "../assets/custom_css4.css";
 import "glightbox/dist/css/glightbox.min.css";
 

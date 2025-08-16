@@ -1,12 +1,12 @@
 // src/components/CityCategories.jsx
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Navbar from "./Layouts/Navbar";
-import Footer from "./Layouts/Footer";
-import Offcanvas from "./Layouts/Offcanvas";
+import Navbar from "./PublicpagesComponents/Navbar";
+import Footer from "./PublicpagesComponents/Footer";
+import Offcanvas from "./PublicpagesComponents/Offcanvas";
 // CityCategories.jsx
 import { getAcceptedPosts } from "../utills/postStore";
-import CitySection from "./Catagories/CitySection"
+import CitySection from "./PublicpagesComponents/ExplorepageComponents/CitySection"
 import "../assets/custom_css2.css" // one reusable component
 
 function CityCategories() {
