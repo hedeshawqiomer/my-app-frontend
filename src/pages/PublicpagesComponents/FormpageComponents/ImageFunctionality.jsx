@@ -1,62 +1,67 @@
 import React from "react";
-
 function ImageUploader({ images, setImages, warning, setWarning }) {
   const MAX_IMAGES = 8;
   const MAX_SIZE_MB = 5;
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
+    const picked = Array.from(e.target.files || []);
+    if (!picked.length) return;
 
-    const validFiles = files.filter(file => file.size < MAX_SIZE_MB * 1024 * 1024);
+    const maxBytes = MAX_SIZE_MB * 1024 * 1024;
+    const valid = [];
+    const tooBig = [];
 
-    if (validFiles.length !== files.length) {
-      setWarning(`Some files were too large. Max allowed is ${MAX_SIZE_MB}MB.`);
-    } else {
-      setWarning("");
+    for (const f of picked) {
+      if (f.size <= maxBytes) valid.push(f);
+      else tooBig.push(f);
     }
 
+    // Merge with previous and cap
     setImages((prev) => {
-      const combined = [...prev, ...validFiles];
-      if (combined.length > MAX_IMAGES) {
-        setWarning(`Only ${MAX_IMAGES} images are allowed.`);
-        return combined.slice(0, MAX_IMAGES);
-      }
-      return combined;
+      const merged = [...prev, ...valid].slice(0, MAX_IMAGES);
+      // Compose a friendly message if we dropped anything
+      const droppedForSize = tooBig.length;
+      const droppedForCap = prev.length + valid.length > MAX_IMAGES
+        ? prev.length + valid.length - MAX_IMAGES
+        : 0;
+
+      const messages = [];
+      if (droppedForSize) messages.push(`${droppedForSize} file(s) > ${MAX_SIZE_MB}MB were skipped`);
+      if (droppedForCap)  messages.push(`Only ${MAX_IMAGES} images allowed; extras were ignored`);
+      setWarning(messages.join(". "));
+
+      return merged;
     });
+
+    // ✅ allow picking the same files again and re-trigger onChange
+    e.target.value = null;
   };
 
   const removeImage = (index) => {
-    const updated = images.filter((_, i) => i !== index);
-    setImages(updated);
+    setImages((prev) => prev.filter((_, i) => i !== index));
     setWarning("");
   };
 
   return (
     <div className="mb-3">
-      <label htmlFor="image" className="form-label">Upload Images</label>
+      <label className="form-label">Upload Images</label>
       <input
         className="form-control"
         type="file"
         accept="image/*"
-        onChange={handleImageChange}
         multiple
-        key={images.length} // to reset input
+        onChange={handleImageChange}
       />
-      <small className="text-muted">
-        You can select multiple images. Max {MAX_IMAGES}.
+      {/* Max size {MAX_SIZE_MB}MB each. Selected: {images.length}/{MAX_IMAGES}. Min 4 images. */}
+      <small className="text-muted d-block mt-1">
+        Select at least 4 images. 
       </small>
 
       <div className="d-flex flex-wrap gap-3 mt-3">
-        {images.map((img, i) => (
+        {images.map((file, i) => (
           <div key={i} className="image-wrapper position-relative">
-            <img src={URL.createObjectURL(img)} alt={`Preview ${i}`} />
-            <button
-              type="button"
-              className="remove-btn"
-              onClick={() => removeImage(i)}
-            >
-              ×
-            </button>
+            <img src={URL.createObjectURL(file)} alt={`Preview ${i}`} />
+            <button type="button" className="remove-btn" onClick={() => removeImage(i)}>×</button>
           </div>
         ))}
       </div>
@@ -65,6 +70,7 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
     </div>
   );
 }
+
 
 export default ImageUploader;
 

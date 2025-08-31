@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../../PublicpagesComponents/Navbar";
-import BackendFooter from "../DashboardComponents/BackendFooter.jsx";
+import BackendFooter from "./BackendFooter.jsx";
 
 export default function AdminLayout() {
   return (

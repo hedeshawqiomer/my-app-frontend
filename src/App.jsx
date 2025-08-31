@@ -27,39 +27,16 @@ export default function App() {
       <Route path="/admin/login" element={<AdminLogin />} />
 
       {/* Admin (guard ONCE here) */}
-      <Route path="/admin" element={<ProtectedRoute allow={["super","moderator"]} />}>
-        <Route
-          element={
-            <Suspense fallback={<Loader />}>
-              <AdminLayout />
-            </Suspense>
-          }
-        >
-          <Route index element={<Navigate to="pending" replace />} />
+   <Route path="/admin" element={<ProtectedRoute allow={["super","moderator"]} />}>
+  <Route element={<Suspense fallback={<Loader />}><AdminLayout /></Suspense>}>
+    <Route index element={<Navigate to="pending" replace />} />
+    <Route path="pending" element={<Suspense><Pendingposts /></Suspense>} />
+    <Route element={<ProtectedRoute allow={["super"]} />}>
+      <Route path="accepted" element={<Suspense><AcceptedPosts /></Suspense>} />
+    </Route>
+  </Route>
+</Route>
 
-          {/* visible to both roles */}
-          <Route
-            path="pending"
-            element={
-              <Suspense fallback={<Loader />}>
-                <Pendingposts />
-              </Suspense>
-            }
-          />
-
-          {/* extra guard: only super can see accepted */}
-          <Route element={<ProtectedRoute allow={["super"]} />}>
-            <Route
-              path="accepted"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AcceptedPosts />
-                </Suspense>
-              }
-            />
-          </Route>
-        </Route>
-      </Route>
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" />} />

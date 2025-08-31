@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function BackendHeaderHeader({  showCityFilter = false, onCityChange }) {
+export default function BackendHeader({  showCityFilter = false, onCityChange }) {
   return (
     <div className="mt-2 pt-1 mb-3 pb-3 ">
   
@@ -14,7 +14,7 @@ export default function BackendHeaderHeader({  showCityFilter = false, onCityCha
               id="cityFilter"
               onChange={(e) => onCityChange?.(e.target.value)}
             >
-              <option value="">Filter by City</option>
+              <option value="">Default</option>
               <option value="Erbil">Erbil</option>
               <option value="Sulaimani">Sulaimani</option>
               <option value="Duhok">Duhok</option>

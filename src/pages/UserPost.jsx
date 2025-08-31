@@ -7,82 +7,82 @@ import BasicInfo from "./PublicpagesComponents/FormpageComponents/BasicInfo";
 import CitySelection from "./PublicpagesComponents/FormpageComponents/CitySelection";
 import LocationForm from "./PublicpagesComponents/FormpageComponents/LocationForm";
 import ExplanationCard from "./PublicpagesComponents/FormpageComponents/ExplanationCard";
-import { addPost } from "../utills/postStore"; // Ensure this path is correct
+import { createPost } from "../api/post"; // ✅ using backend
 import Offcanvas from "./PublicpagesComponents/Offcanvas";
 import { useNavigate } from "react-router-dom";
 
-
 function UserPost() {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("");           // kept for UI only
   const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("");     // "lat,lng" e.g. "36.1909,44.0069"
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [showDistrict, setShowDistrict] = useState(false);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState([]);         // File[]
   const [warning, setWarning] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-
 
   const cityDistricts = {
     Erbil: ["Soran", "Shaqlawa", "Mergasor", "Koya"],
     Sulaimani: ["Chamchamal", "Tasluja", "Penjwen", "Qaladze"],
     Duhok: ["Akre", "Zakho", "Amadiya", "Simele"],
     Halabja: ["Byara", "Tawella"],
-    Kirkuk: ["Daquq", "Tuz Khurmatu" ]
+    Kirkuk: ["Daquq", "Tuz Khurmatu"],
   };
 
   useEffect(() => {
     const navbar = document.querySelector("#mainNav");
     const handleScroll = () => {
-      if (window.scrollY === 0) {
-        navbar?.classList.remove("navbar-shrink");
-      } else {
-        navbar?.classList.add("navbar-shrink");
-      }
+      if (window.scrollY === 0) navbar?.classList.remove("navbar-shrink");
+      else navbar?.classList.add("navbar-shrink");
     };
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("✅ Submit clicked!");
 
+    // Basic checks
     if (images.length < 4) {
       setWarning("Please upload at least 4 images.");
       return;
     }
+    if (!name || !email || !city || !district || !location) {
+      setWarning("Fill all required fields (name, email, city, district, location, 4+ images).");
+      return;
+    }
+
+    // Optional minimal lat,lng format check
+    const locOk = /^\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*$/.test(location);
+    if (!locOk) {
+      setWarning("Location must be in 'lat,lng' format, e.g. 36.1909,44.0069");
+      return;
+    }
 
     setWarning("");
+    setSubmitting(true);
+    try {
+      await createPost(
+        { name, email, city, district, location }, // phone not sent (DB column removed)
+        images                                      // raw File[]
+      );
 
-    const newPost = {
-      name,
-      phone,
-      email,
-      location,
-      city,
-      district,
-      images: images.map((file) => URL.createObjectURL(file)) // 🔁 PREVIEW URLs
-    };
+      // Clear the form
+      setName(""); setPhone(""); setEmail(""); setLocation("");
+      setCity(""); setDistrict(""); setShowDistrict(false);
+      setImages([]);
 
-    const savedPost = addPost(newPost);
-    console.log("✅ Post saved to localStorage:", savedPost);
-
-    // Clear the form
-    setName("");
-    setPhone("");
-    setEmail("");
-    setLocation("");
-    setCity("");
-    setDistrict("");
-    setShowDistrict(false);
-    setImages([]);
-
-    navigate("/submitted-posts");
-
+      navigate("/submitted-posts");
+    } catch (err) {
+      console.error(err);
+      setWarning(err?.response?.data?.error || "Failed to submit. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -95,15 +95,27 @@ function UserPost() {
           </div>
           <div className="col-lg-6 col-md-10">
             <div className="card shadow p-4 mt-5">
-              <h3 style={{
-          fontSize: "37px",
-          fontFamily: "sans-serif",
-          background: "linear-gradient(to right, #d8cb16, #6d6603)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          color: "transparent",
-        }}className="text-success fw-bold mb-3">Share a Destination</h3>
+              <h3
+                style={{
+                  fontSize: "37px",
+                  fontFamily: "sans-serif",
+                  background: "linear-gradient(to right, #d8cb16, #6d6603)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+                className="text-success fw-bold mb-3"
+              >
+                Share a Destination
+              </h3>
+
+              {warning && (
+                <div className="alert alert-warning py-2">{warning}</div>
+              )}
+{/* <p className="text-muted">Debug: images selected = {images?.length ?? 0}</p> */}
+
+
               <form onSubmit={handleSubmit}>
                 <BasicInfo
                   name={name}
@@ -113,13 +125,16 @@ function UserPost() {
                   email={email}
                   setEmail={setEmail}
                 />
+
                 <ImageUploader
                   images={images}
                   setImages={setImages}
                   warning={warning}
                   setWarning={setWarning}
                 />
+
                 <LocationForm location={location} setLocation={setLocation} />
+
                 <CitySelection
                   city={city}
                   setCity={setCity}
@@ -129,9 +144,10 @@ function UserPost() {
                   setShowDistrict={setShowDistrict}
                   cityDistricts={cityDistricts}
                 />
+
                 <div className="d-grid">
-                  <button className="btn btn-success btn-lg" type="submit">
-                    Submit Post
+                  <button className="btn btn-success btn-lg" type="submit" disabled={submitting}>
+                    {submitting ? "Submitting..." : "Submit Post"}
                   </button>
                 </div>
               </form>

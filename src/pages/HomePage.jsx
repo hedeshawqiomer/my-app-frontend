@@ -10,6 +10,13 @@ import '../assets/custom_css.css';
 function HomePage() {
 useEffect(() => {
   // 🔷 Animate cards when visible
+  // 🔷 Animate .secondsec section
+   // 🔷 Animate hero section with .slide-down or .fade-down
+    // 🔷 Navbar shrink on scroll
+  // 🔷 Bootstrap ScrollSpy (only if Bootstrap is globally loaded)
+   // 🔷 Collapse navbar on link click (for mobile)
+  // 🔷 SimpleLightbox plugin for portfolio (if loaded)
+  // 🔷 AOS animation init (if loaded) 
   const cardObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -26,7 +33,7 @@ useEffect(() => {
     cardObserver.observe(card);
   });
 
-  // 🔷 Animate .secondsec section
+  
   const secondSecObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -40,6 +47,11 @@ useEffect(() => {
   if (section2) secondSecObserver.observe(section2);
 
   // 🔷 Animate hero section with .slide-down or .fade-down
+    // 🔷 Navbar shrink on scroll
+  // 🔷 Bootstrap ScrollSpy (only if Bootstrap is globally loaded)
+   // 🔷 Collapse navbar on link click (for mobile)
+  // 🔷 SimpleLightbox plugin for portfolio (if loaded)
+  // 🔷 AOS animation init (if loaded)
   const heroSection = document.getElementById("heroSection");
   if (heroSection) {
     const targets = heroSection.querySelectorAll('.slide-down, .fade-down');
@@ -56,7 +68,7 @@ useEffect(() => {
     heroObserver.observe(heroSection);
   }
 
-  // 🔷 Navbar shrink on scroll
+
   const navbarShrink = () => {
     const navbar = document.getElementById('mainNav');
     if (!navbar) return;
@@ -70,7 +82,6 @@ useEffect(() => {
   navbarShrink();
   document.addEventListener('scroll', navbarShrink);
 
-  // 🔷 Bootstrap ScrollSpy (only if Bootstrap is globally loaded)
   const mainNav = document.getElementById('mainNav');
   if (mainNav && window.bootstrap) {
     new window.bootstrap.ScrollSpy(document.body, {
@@ -79,7 +90,7 @@ useEffect(() => {
     });
   }
 
-  // 🔷 Collapse navbar on link click (for mobile)
+ 
   const navbarToggler = document.querySelector('.navbar-toggler');
   const navLinks = document.querySelectorAll('#navbarResponsive .nav-link');
   navLinks.forEach(link => {
@@ -90,7 +101,7 @@ useEffect(() => {
     });
   });
 
-// 🔷 SimpleLightbox plugin for portfolio (if loaded)
+
 const portfolioEls = document.querySelectorAll('#portfolio a.portfolio-box');
 if (portfolioEls.length > 0 && window.SimpleLightbox) {
 new window.SimpleLightbox('#portfolio a.portfolio-box');
@@ -98,7 +109,7 @@ new window.SimpleLightbox('#portfolio a.portfolio-box');
 
 
 
-  // 🔷 AOS animation init (if loaded)
+
   if (window.AOS) {
     window.AOS.init({
       duration: 1000,

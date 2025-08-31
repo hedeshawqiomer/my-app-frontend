@@ -2,6 +2,8 @@ import React from "react";
 import "../../../assets/custom_css2.css"
 // CardCoursel.jsx
 function CardCoursel({ post }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const toAbs = (u) => (u?.startsWith("/") ? `${API_BASE}${u}` : u || "");
   return (
     <div
       className="modal fade"
@@ -17,11 +19,12 @@ function CardCoursel({ post }) {
           <div className="modal-body">
             <div id={`carousel-${post.id}`} className="carousel slide" data-bs-ride="carousel">
               <div className="carousel-inner">
-                {post.images.map((img, i) => (
-                  <div key={i} className={`carousel-item ${i === 0 ? "active" : ""}`}>
-                    <img src={img} className="d-block w-100 carousel-img " alt={`Slide ${i}`} />
-                  </div>
-                ))}
+          {(post.images || []).map((img, i) => (
+  <div className={`carousel-item ${i === 0 ? "active" : ""}`} key={img.id ?? i}>
+    <img src={toAbs(img.url)} className="d-block w-100 carousel-img" alt={`Slide ${i}`} />
+  </div>
+))}
+
               </div>
               <button
                 className="carousel-control-prev"

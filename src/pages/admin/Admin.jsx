@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import GLightbox from "glightbox";
 import BackendNavbar from "../PublicpagesComponents/Navbar";
 import BackendHeader from "./DashboardComponents/BackendHeader";
@@ -8,10 +8,6 @@ import "../assets/custom_css4.css";
 import "glightbox/dist/css/glightbox.min.css";
 
 function Admin() {
-  useEffect(() => {
-    const lightbox = GLightbox({ selector: ".glightbox" });
-    return () => lightbox.destroy();
-  }, []);
 
   return (
     <div className="d-flex flex-column min-vh-100">
