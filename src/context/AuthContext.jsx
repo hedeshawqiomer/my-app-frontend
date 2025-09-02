@@ -3,7 +3,6 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import { apiLogin, apiMe, apiLogout } from "../api/auth";
 
 const AuthContext = createContext(null);
-// src/context/AuthContext.jsx
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
@@ -42,7 +41,9 @@ export function AuthProvider({ children }) {
 
   // Logout — clear server session + local state
   const logout = async () => {
-    try { await apiLogout(); } catch {}
+    try { await apiLogout(); } catch {
+      // ignore, still clear local state
+    }
     setUser(null);
   };
   const hasRole = (allowed = []) => {

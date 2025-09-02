@@ -90,7 +90,7 @@ function UserPost() {
       <Navbar />
       <div className="container py-5">
         <div className="row justify-content-center align-items-start">
-          <div className="col-lg-5 col-md-10 mb-4 sticky-info">
+          <div className="col-lg-5 col-md-10 mb-4 mt-5 sticky-info">
             <ExplanationCard />
           </div>
           <div className="col-lg-6 col-md-10">

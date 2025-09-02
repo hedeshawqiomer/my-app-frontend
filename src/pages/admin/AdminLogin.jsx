@@ -37,7 +37,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100 bg-body-tertiary">
+    <div className="d-flex flex-column min-vh-100  m-4">
       <main className="form-signin w-100 m-auto py-4" style={{ maxWidth: "400px" }}>
         <form onSubmit={onSubmit}>
           <h1 className="h3 mb-3 fw-bold d-flex align-items-center">

@@ -40,7 +40,6 @@ export default function EachAcceptedpost({ post: p, toAbs, onEdit, onDelete }) {
         <ul className="small text-muted list-unstyled mb-0">
           {(p.name || p.uploaderName) && <li>Name: {p.name || p.uploaderName}</li>}
           {p.email && <li>Email: {p.email}</li>}
-          {p.district && <li>District: {p.district}</li>}
           {p.location && <li>Location: {p.location}</li>}
         </ul>
       </div>

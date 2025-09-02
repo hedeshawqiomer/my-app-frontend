@@ -118,7 +118,7 @@ useEffect(() => {
 }, [recentPosts]); // << depend on the data you map over
 
 return (
-  <section className="container-fluid secondsec">
+  <section className=" px-3 container-fluid secondsec">
     <div className="container">
       <div className="row g-4">
           <h1
@@ -168,7 +168,7 @@ return (
                       <strong>District:</strong> {post.district}
                     </p>
                     <p className="card-text text-muted mb-1">
-                      <strong> Dist. From City: </strong>
+                      <strong> City Center .Dist: </strong>
                       {distanceText}
                     </p>
                     <p className="card-text text-muted">
@@ -179,7 +179,7 @@ return (
   href={buildDirectionsUrl(userLocation, post.location)}
   target="_blank"
   rel="noopener noreferrer"
-  className="btn btn-outline-success w-100"
+  className="btn btn-success w-100"
   title="Open Google Maps directions from your location"
 >
   🧭 Directions in Google Maps
