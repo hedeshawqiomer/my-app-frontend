@@ -1,7 +1,7 @@
 import React from "react";
 function ImageUploader({ images, setImages, warning, setWarning }) {
   const MAX_IMAGES = 8;
-  const MAX_SIZE_MB = 5;
+  const MAX_SIZE_MB = 20;
 
   const handleImageChange = (e) => {
     const picked = Array.from(e.target.files || []);
