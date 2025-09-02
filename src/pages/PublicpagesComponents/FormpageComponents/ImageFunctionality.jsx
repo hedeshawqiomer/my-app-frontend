@@ -1,7 +1,7 @@
 import React from "react";
 function ImageUploader({ images, setImages, warning, setWarning }) {
-  const MAX_IMAGES = 8;
-  const MAX_SIZE_MB = 1000;
+  const MAX_IMAGES = 13;
+  const MAX_SIZE_MB = 3000;
   const SUPPORTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
   const handleImageChange = (e) => {
@@ -71,7 +71,7 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
         onChange={handleImageChange}
       />
       <small className="text-muted d-block mt-1">
-        Use JPG/PNG (WebP ok). Select at least 4 images.
+        Select at least 4 images.
       </small>
 
       <div className="d-flex flex-wrap gap-3 mt-3">
