@@ -1,7 +1,8 @@
 import React from "react";
 function ImageUploader({ images, setImages, warning, setWarning }) {
   const MAX_IMAGES = 8;
-  const MAX_SIZE_MB = 100;
+  const MAX_SIZE_MB = 1000;
+  const SUPPORTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
   const handleImageChange = (e) => {
     const picked = Array.from(e.target.files || []);
@@ -10,37 +11,54 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
     const maxBytes = MAX_SIZE_MB * 1024 * 1024;
     const valid = [];
     const tooBig = [];
+    const unsupported = [];
 
     for (const f of picked) {
+      if (!SUPPORTED_TYPES.has(f.type)) {
+        unsupported.push(f);
+        continue;
+      }
       if (f.size <= maxBytes) valid.push(f);
       else tooBig.push(f);
     }
 
-    // Merge with previous and cap
-    setImages((prev) => {
-      const merged = [...prev, ...valid].slice(0, MAX_IMAGES);
-      // Compose a friendly message if we dropped anything
+    setImages(prev => {
+      const withPreviews = valid.map(f => ({ file: f, previewUrl: URL.createObjectURL(f) }));
+      const merged = [...prev, ...withPreviews].slice(0, MAX_IMAGES);
+
       const droppedForSize = tooBig.length;
-      const droppedForCap = prev.length + valid.length > MAX_IMAGES
-        ? prev.length + valid.length - MAX_IMAGES
+      const droppedForCap = prev.length + withPreviews.length > MAX_IMAGES
+        ? prev.length + withPreviews.length - MAX_IMAGES
         : 0;
 
-      const messages = [];
-      if (droppedForSize) messages.push(`${droppedForSize} file(s) > ${MAX_SIZE_MB}MB were skipped`);
-      if (droppedForCap)  messages.push(`Only ${MAX_IMAGES} images allowed; extras were ignored`);
-      setWarning(messages.join(". "));
+      const msgs = [];
+      if (unsupported.length) msgs.push(`${unsupported.length} file(s) skipped (unsupported format). Use JPG/PNG.`);
+      if (droppedForSize) msgs.push(`${droppedForSize} file(s) > ${MAX_SIZE_MB}MB were skipped`);
+      if (droppedForCap)  msgs.push(`Only ${MAX_IMAGES} images allowed; extras were ignored`);
+      setWarning(msgs.join(". "));
 
       return merged;
     });
 
-    // ✅ allow picking the same files again and re-trigger onChange
     e.target.value = null;
   };
 
   const removeImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImages(prev => {
+      const item = prev[index];
+      if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      return prev.filter((_, i) => i !== index);
+    });
     setWarning("");
   };
+
+  React.useEffect(() => {
+    return () => {
+      // Revoke all previews on unmount
+      images.forEach(item => item?.previewUrl && URL.revokeObjectURL(item.previewUrl));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="mb-3">
@@ -48,19 +66,18 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
       <input
         className="form-control"
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp"
         multiple
         onChange={handleImageChange}
       />
-      {/* Max size {MAX_SIZE_MB}MB each. Selected: {images.length}/{MAX_IMAGES}. Min 4 images. */}
       <small className="text-muted d-block mt-1">
-        Select at least 4 images. 
+        Use JPG/PNG (WebP ok). Select at least 4 images.
       </small>
 
       <div className="d-flex flex-wrap gap-3 mt-3">
-        {images.map((file, i) => (
+        {images.map((item, i) => (
           <div key={i} className="image-wrapper position-relative">
-            <img src={URL.createObjectURL(file)} alt={`Preview ${i}`} />
+            <img src={item.previewUrl} alt={`Preview ${i}`} loading="lazy" />
             <button type="button" className="remove-btn" onClick={() => removeImage(i)}>×</button>
           </div>
         ))}
