@@ -125,7 +125,7 @@ function CitySection({ city, posts }) {
                     href={buildDirectionsUrl(userLocation, post.location)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-outline-success w-100 mb-3"
+                    className="btn btn-success w-100 mb-3"
                     title="Open Google Maps directions from your location"
                   >
                     🧭 Directions in Google Maps

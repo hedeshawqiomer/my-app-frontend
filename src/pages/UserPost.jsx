@@ -47,7 +47,9 @@ function UserPost() {
     e.preventDefault();
 
     // Basic checks
-    if (images.length < 4) {
+  // Support both shapes: [{file, previewUrl}] or [File]
+ const files = images.map((it) => (it?.file ? it.file : it)).filter(Boolean);
+ if (files.length < 4) {
       setWarning("Please upload at least 4 images.");
       return;
     }
@@ -66,11 +68,7 @@ function UserPost() {
     setWarning("");
     setSubmitting(true);
     try {
-      await createPost(
-        { name, email, city, district, location }, // phone not sent (DB column removed)
-        images                                      // raw File[]
-      );
-
+     await createPost({ name, email, city, district, location }, files);
       // Clear the form
       setName(""); setPhone(""); setEmail(""); setLocation("");
       setCity(""); setDistrict(""); setShowDistrict(false);
@@ -146,9 +144,10 @@ function UserPost() {
                 />
 
                 <div className="d-grid">
-                  <button className="btn btn-success btn-lg" type="submit" disabled={submitting}>
-                    {submitting ? "Submitting..." : "Submit Post"}
-                  </button>
+                <button className="btn btn-success btn-lg" type="submit" disabled={submitting || images.length < 4}>
+  {submitting ? "Submitting..." : "Submit Post"}
+</button>
+
                 </div>
               </form>
             </div>
