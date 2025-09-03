@@ -19,7 +19,6 @@ export default function BackendHeader({  showCityFilter = false, onCityChange })
               <option value="Sulaimani">Sulaimani</option>
               <option value="Duhok">Duhok</option>
               <option value="Halabja">Halabja</option>
-              <option value="Kirkuk">Kirkuk</option>
             </select>
           </div>
         </div>
