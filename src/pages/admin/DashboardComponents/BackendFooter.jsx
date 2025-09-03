@@ -2,7 +2,7 @@ import React from "react";
 
 function BackendFooter() {
   return (
-    <footer className="mt-auto py-3  mt-5 border-top">
+    <footer className="py-3  mt-4 border-top">
       <p className="text-center text-muted mb-0">
         EKurdistan | Developed by{" "}
         <a
