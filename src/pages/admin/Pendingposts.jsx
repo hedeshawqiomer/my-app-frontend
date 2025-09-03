@@ -77,7 +77,7 @@ useEffect(() => {
       />
       </div>
 
-      <div className="bg-white p-3 p-md-4 rounded shadow">
+      <div className="bg-white pt-3 pe-3 ps-3 p-md-4 rounded shadow">
         {loading && <div className="alert alert-info mb-3">Loading…</div>}
         {err && <div className="alert alert-danger mb-3">{err}</div>}
 
