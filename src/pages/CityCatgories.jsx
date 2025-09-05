@@ -33,7 +33,7 @@ function CityCategories() {
     }
   }, [location.hash]);
 
-  const cities = ["Erbil", "Sulaimani", "Duhok", "Halabja", "Kirkuk"];
+  const cities = ["Erbil", "Sulaimani", "Duhok", "Halabja"];
 
   return (
     <>
