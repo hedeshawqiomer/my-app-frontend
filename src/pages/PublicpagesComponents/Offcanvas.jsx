@@ -44,7 +44,6 @@ function Offcanvas() {
           <a href="/city-categories#Erbil" className="btn gradient-btn text-dark" onClick={go('#Erbil')}>Erbil</a>
           <a href="/city-categories#Slemani" className="btn gradient-btn text-dark" onClick={go('#Slemani')}>Slemani</a>
           <a href="/city-categories#Duhok" className="btn gradient-btn text-dark" onClick={go('#Duhok')}>Duhok</a>
-          <a href="/city-categories#Kirkuk" className="btn gradient-btn text-dark" onClick={go('#Kirkuk')}>Kirkuk</a>
           <a href="/city-categories#Halabja" className="btn gradient-btn text-dark" onClick={go('#Halabja')}>Halabja</a>
         </div>
       </div>
