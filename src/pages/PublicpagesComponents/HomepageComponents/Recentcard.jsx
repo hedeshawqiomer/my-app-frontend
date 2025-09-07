@@ -247,7 +247,7 @@ function Recentcard() {
                               post.images.map((img, i) => (
                                 <div
                                   className={`carousel-item ${i === 0 ? "active" : ""}`}
-                                  key={i}
+                                  key={`${keyId}-${i}`}
                                 >
                                   <img
                                     src={img}
