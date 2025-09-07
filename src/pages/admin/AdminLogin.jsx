@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BackendFooter from "./DashboardComponents/BackendFooter";
 import { useAuth } from "../../context/AuthContext";
-import { sanitizeNextPath } from "../../utils/nav";
+import { sanitizeNextPath } from "../../utills/nav";
 
 export default function AdminLogin() {
   const navigate = useNavigate();

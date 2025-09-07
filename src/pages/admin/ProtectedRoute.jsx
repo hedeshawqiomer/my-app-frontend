@@ -2,7 +2,7 @@
 import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { sanitizeNextPath } from "../../utils/nav";
+import { sanitizeNextPath } from "../../utills/nav";
 
 const toRoleSet = (arr) => new Set((arr || []).map(r => String(r || "").toLowerCase()));
 
