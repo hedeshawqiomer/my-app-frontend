@@ -1,3 +1,4 @@
+// src/components/UserPost.jsx
 import React, { useEffect, useState } from "react";
 import Navbar from "./PublicpagesComponents/Navbar";
 import Footer from "./PublicpagesComponents/Footer";
@@ -7,31 +8,30 @@ import BasicInfo from "./PublicpagesComponents/FormpageComponents/BasicInfo";
 import CitySelection from "./PublicpagesComponents/FormpageComponents/CitySelection";
 import LocationForm from "./PublicpagesComponents/FormpageComponents/LocationForm";
 import ExplanationCard from "./PublicpagesComponents/FormpageComponents/ExplanationCard";
-import { createPost } from "../api/post"; // ✅ using backend
+import { createPost } from "../api/post";
 import Offcanvas from "./PublicpagesComponents/Offcanvas";
 import { useNavigate } from "react-router-dom";
 
 function UserPost() {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");           // kept for UI only
-  const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");     // "lat,lng" e.g. "36.1909,44.0069"
+  const [email, setEmail] = useState("");                 // optional field
+  const [location, setLocation] = useState("");           // "lat,lng" (e.g., "36.1909,44.0069")
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [showDistrict, setShowDistrict] = useState(false);
-  const [images, setImages] = useState([]);         // File[]
+  const [images, setImages] = useState([]);               // [{file, previewUrl}] or [File]
   const [warning, setWarning] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const cityDistricts = {
-    Erbil: ["Hawler", "Soran", "Shaqlawa", "Mergasor", "Choman", "Koye","Rwanduz","Dashti Hawler"],
-    Sulaimani: ["Slemani", "Bazyan", "Penjwen", "Qaradax", "Sharbazher", "Dukan","Ranya","Pashadar","Penjwin","Chemchemal"],
-    Duhok: ["Duhok","Akre", "Zakho", "Amadiya", "Simele","Bardarash","Shekhan"],
-    Halabja: ["Halbja","Khurmal","Byara", "Tawella"],
-    // Kirkuk: ["Daquq", "Tuz Khurmatu"],
+    Erbil: ["Hawler", "Soran", "Shaqlawa", "Mergasor", "Choman", "Koye", "Rwanduz", "Dashti Hawler"],
+    Sulaimani: ["Slemani", "Bazyan", "Penjwen", "Qaradax", "Sharbazher", "Dukan", "Ranya", "Pashadar", "Penjwin", "Chemchemal"],
+    Duhok: ["Duhok", "Akre", "Zakho", "Amadiya", "Simele", "Bardarash", "Shekhan"],
+    Halabja: ["Halbja", "Khurmal", "Byara", "Tawella"],
   };
 
+  // Navbar shrink on scroll (UX polish)
   useEffect(() => {
     const navbar = document.querySelector("#mainNav");
     const handleScroll = () => {
@@ -46,20 +46,52 @@ function UserPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic checks
-  // Support both shapes: [{file, previewUrl}] or [File]
- const files = images.map((it) => (it?.file ? it.file : it)).filter(Boolean);
- if (files.length < 4) {
+    // Normalize images to File[]
+    const files = images.map((it) => (it?.file ? it.file : it)).filter(Boolean);
+    if (files.length < 4) {
       setWarning("Please upload at least 4 images.");
       return;
     }
-    if (!name || !email || !city || !district || !location) {
-      setWarning("Fill all required fields (name, email, city, district, location, 4+ images).");
+
+    // --- Sanitize key fields ---
+    const _name = name.trim();
+    const _email = email.trim();
+    const _city = city.trim();
+    const _district = district.trim();
+    const _location = location.trim();
+
+    // --- Length limits (defensive UX) ---
+    if (_name.length > 80) {
+      setWarning("Name is too long (max 80 characters).");
+      return;
+    }
+    if (_email && _email.length > 120) {
+      setWarning("Email is too long (max 120 characters).");
+      return;
+    }
+    if (_city.length > 50 || _district.length > 50) {
+      setWarning("City/District names are too long.");
+      return;
+    }
+    if (_location.length > 100) {
+      setWarning("Location input is too long.");
       return;
     }
 
-    // Optional minimal lat,lng format check
-    const locOk = /^\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*$/.test(location);
+    // --- Required checks (use sanitized values) ---
+    if (!_name || !_city || !_district || !_location) {
+      setWarning("Fill all required fields (name, city, district, location, 4+ images).");
+      return;
+    }
+
+    // Optional: light email format validation (email is optional)
+    if (_email && !/^\S+@\S+\.\S+$/.test(_email)) {
+      setWarning("Please enter a valid email address.");
+      return;
+    }
+
+    // Minimal lat,lng format check
+    const locOk = /^\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*$/.test(_location);
     if (!locOk) {
       setWarning("Location must be in 'lat,lng' format, e.g. 36.1909,44.0069");
       return;
@@ -67,11 +99,21 @@ function UserPost() {
 
     setWarning("");
     setSubmitting(true);
+
     try {
-     await createPost({ name, email, city, district, location }, files);
+      // Send sanitized values
+      await createPost(
+        { name: _name, email: _email, city: _city, district: _district, location: _location },
+        files
+      );
+
       // Clear the form
-      setName(""); setPhone(""); setEmail(""); setLocation("");
-      setCity(""); setDistrict(""); setShowDistrict(false);
+      setName("");
+      setEmail("");
+      setLocation("");
+      setCity("");
+      setDistrict("");
+      setShowDistrict(false);
       setImages([]);
 
       navigate("/submitted-posts");
@@ -91,6 +133,7 @@ function UserPost() {
           <div className="col-lg-5 col-md-10 mb-4 mt-5 sticky-info">
             <ExplanationCard />
           </div>
+
           <div className="col-lg-6 col-md-10">
             <div className="card shadow p-4 mt-5">
               <h3
@@ -108,18 +151,12 @@ function UserPost() {
                 Share a Destination
               </h3>
 
-              {warning && (
-                <div className="alert alert-warning py-2">{warning}</div>
-              )}
-{/* <p className="text-muted">Debug: images selected = {images?.length ?? 0}</p> */}
+              {warning && <div className="alert alert-warning py-2">{warning}</div>}
 
-
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} noValidate>
                 <BasicInfo
                   name={name}
                   setName={setName}
-                  phone={phone}
-                  setPhone={setPhone}
                   email={email}
                   setEmail={setEmail}
                 />
@@ -144,16 +181,20 @@ function UserPost() {
                 />
 
                 <div className="d-grid">
-                <button className="btn btn-success btn-lg" type="submit" disabled={submitting || images.length < 4}>
-  {submitting ? "Submitting..." : "Submit Post"}
-</button>
-
+                  <button
+                    className="btn btn-success btn-lg"
+                    type="submit"
+                    disabled={submitting || images.length < 4}
+                  >
+                    {submitting ? "Submitting..." : "Submit Post"}
+                  </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
+
       <Offcanvas />
       <Footer />
     </>
