@@ -1,4 +1,4 @@
-// src/pages/CityCatgories.jsx  (your file name)
+// src/pages/CityCategories.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./PublicpagesComponents/Navbar";
@@ -8,46 +8,60 @@ import CitySection from "./PublicpagesComponents/ExplorepageComponents/CitySecti
 import { listPublicPosts } from "../api/public";
 import "../assets/custom_css2.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const CITIES = ["Erbil", "Sulaimani", "Duhok", "Halabja"]; // <- canonical
 
-function CityCategories() {
+export default function CityCategories() {
   const location = useLocation();
   const [acceptedPosts, setAcceptedPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // fetch accepted posts from backend
+  // Fetch accepted posts from backend
   useEffect(() => {
     (async () => {
-      const data = await listPublicPosts();
-      setAcceptedPosts(data || []);
+      try {
+        const data = await listPublicPosts();
+        setAcceptedPosts(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error("Failed to load public posts", e);
+        setAcceptedPosts([]);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
-  // scroll to hash
+  // Smooth scroll to the hash (only for known city IDs)
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace('#', '');
+    const raw = location.hash?.slice(1) || "";
+    const id = decodeURIComponent(raw);
+    if (id && CITIES.includes(id)) {
       const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   }, [location.hash]);
-
-  const cities = ["Erbil", "Sulaimani", "Duhok", "Halabja"];
 
   return (
     <>
       <Navbar />
-      {cities.map(city => (
-        <CitySection
-          key={city}
-          city={city}
-          posts={acceptedPosts.filter(p => p.city === city)}
-        />
-      ))}
+      <main className="container py-4">
+        {loading ? (
+          <div className="text-center py-5" role="status" aria-live="polite">
+            Loading cities…
+          </div>
+        ) : (
+          CITIES.map((city) => (
+            <CitySection
+              key={city}
+              city={city}
+              posts={acceptedPosts.filter((p) => p.city === city)}
+            />
+          ))
+        )}
+      </main>
       <Footer />
       <Offcanvas />
     </>
   );
 }
-export default CityCategories;
