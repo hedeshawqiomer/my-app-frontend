@@ -7,7 +7,7 @@ import UserPost from "./pages/UserPost";
 import AdminLogin from "./pages/admin/AdminLogin";
 import ProtectedRoute from "./pages/admin/ProtectedRoute";
 import SubmittedPosts from "./pages/SubmittedPosts";
-
+import Forbidden from "./pages/admin/Forrebiden";
 const AdminLayout   = lazy(() => import("./pages/admin/DashboardComponents/AdminLayout.jsx"));
 const Pendingposts  = lazy(() => import("./pages/admin/Pendingposts.jsx"));
 const AcceptedPosts = lazy(() => import("./pages/admin/AllpostsDashboard.jsx"));
@@ -17,6 +17,8 @@ const Loader = () => <div className="text-center py-5">Loading…</div>;
 export default function App() {
   return (
     <Routes>
+
+      
       {/* Public */}
       <Route path="/" element={<HomePage />} />
       <Route path="/city-categories" element={<CityCategories />} />
@@ -25,6 +27,8 @@ export default function App() {
 
       {/* Auth */}
       <Route path="/admin/login" element={<AdminLogin />} />
+      // in App.jsx
+<Route path="/403" element={<Forbidden />} />
 
       {/* Admin (guard ONCE here) */}
    <Route path="/admin" element={<ProtectedRoute allow={["super","moderator"]} />}>
