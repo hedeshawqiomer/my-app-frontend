@@ -114,7 +114,7 @@ function CitySection({ city, posts }) {
                     <strong>District:</strong> {post.district}
                   </p>
                   <p className="card-text text-muted mb-1">
-                    <strong>Dist. From City:</strong> {distanceText}
+                    <strong>Dist. From City:</strong> {distanceText} km
                   </p>
                   <p className="card-text text-muted mb-1">
                     <strong>Uploaded by:</strong> {post.name}

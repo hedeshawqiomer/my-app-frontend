@@ -144,18 +144,21 @@ function Recentcard() {
           </h1>
 
           {recentPosts.map((post, index) => {
-            const center = cityCenters[post.city];
-            let distanceText = "Distance unavailable";
+          // above: reuse your parseLatLng from the same file
+const destLatLng = parseLatLng(post.location);
+const center = cityCenters[post.city];
 
-            if (userLocation && center) {
-              const dist = getDistanceFromLatLonInKm(
-                userLocation.lat,
-                userLocation.lng,
-                center.lat,
-                center.lng
-              );
-              distanceText = `${dist.toFixed(2)}`;
-            }
+let distanceText = "Distance unavailable";
+if (userLocation) {
+  const target = destLatLng || center; // prefer post coords, else city center
+  if (target) {
+    const dist = getDistanceFromLatLonInKm(
+      userLocation.lat, userLocation.lng, target.lat, target.lng
+    );
+    distanceText = `${dist.toFixed(2)}`; // add " km" if you want
+  }
+}
+
 
             const keyId = post.id ?? index;
 
@@ -182,7 +185,7 @@ function Recentcard() {
                     </p>
                     <p className="card-text text-muted mb-1">
                       <strong>City Center .Dist: </strong>
-                      {distanceText}
+                      {distanceText} km
                     </p>
                     <p className="card-text text-muted">
                       <strong>Uploaded by: </strong>
