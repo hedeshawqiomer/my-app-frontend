@@ -52,7 +52,7 @@ function CitySection({ city, posts }) {
   }, []);
 
   return (
-    <section className="secondsec3" id={city}>
+   <section className="secondsec3" id={city}>
       <h3
         className="section-heading text-success"
         style={{
