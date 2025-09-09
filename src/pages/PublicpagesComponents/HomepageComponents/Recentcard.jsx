@@ -144,21 +144,19 @@ function Recentcard() {
           </h1>
 
           {recentPosts.map((post, index) => {
-          // above: reuse your parseLatLng from the same file
-const destLatLng = parseLatLng(post.location);
-const center = cityCenters[post.city];
+            const postLL = parseLatLng(post.location);           // required per your rule
+            const center = cityCenters[post.city];               // fallback origin
 
-let distanceText = "Distance unavailable";
-if (userLocation) {
-  const target = destLatLng || center; // prefer post coords, else city center
-  if (target) {
-    const dist = getDistanceFromLatLonInKm(
-      userLocation.lat, userLocation.lng, target.lat, target.lng
-    );
-    distanceText = `${dist.toFixed(2)}`; // add " km" if you want
-  }
-}
-
+            let distanceText = "—";
+            if (postLL) {
+              const origin = userLocation ?? center;             // user→post OR center→post
+              if (origin) {
+                const km = getDistanceFromLatLonInKm(
+                  origin.lat, origin.lng, postLL.lat, postLL.lng
+                );
+                distanceText = `${km.toFixed(2)} km`;
+              }
+            }
 
             const keyId = post.id ?? index;
 
@@ -184,8 +182,7 @@ if (userLocation) {
                       <strong>District:</strong> {post.district}
                     </p>
                     <p className="card-text text-muted mb-1">
-                      <strong>City Center .Dist: </strong>
-                      {distanceText} km
+                      <strong>Distance:</strong> {distanceText}
                     </p>
                     <p className="card-text text-muted">
                       <strong>Uploaded by: </strong>

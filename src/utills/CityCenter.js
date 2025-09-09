@@ -1,10 +1,11 @@
 // src/utills/cityCenters.js
+// src/utills/CityCenter.js
 const cityCenters = {
-  Erbil: { lat: 36.1911, lng: 44.0092 },
-  Sulaimani: { lat: 35.5560, lng: 45.4352 },
-  Duhok: { lat: 36.8663, lng: 42.9881 },
-  Halabja: { lat: 35.1779, lng: 45.9861 },
-  // Kirkuk: { lat: 35.4681, lng: 44.3922 }
+  Erbil:        { lat: 36.2000, lng: 44.0000 },
+  Sulaymaniyah: { lat: 35.5610, lng: 45.4420 }, // approx city center
+  Duhok:        { lat: 36.0000, lng: 43.0000 }, // approx city center
+  Halabja:      { lat: 35.1833, lng: 45.9833 },
 };
+
 
 export default cityCenters;

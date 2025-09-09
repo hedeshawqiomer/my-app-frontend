@@ -8,7 +8,6 @@ function CitySection({ city, posts }) {
   const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 
   // ---------- Helpers ----------
-  // Parse "lat,lng" text to { lat, lng } or return null
   function parseLatLng(input) {
     if (!input || typeof input !== "string") return null;
     const m = input.trim().match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
@@ -20,7 +19,6 @@ function CitySection({ city, posts }) {
     return { lat, lng };
   }
 
-  // Build a Google Maps Directions URL
   function buildDirectionsUrl(userLoc, destStr, travelMode = "driving") {
     const destLatLng = parseLatLng(destStr);
     const base = "https://www.google.com/maps/dir/?api=1";
@@ -35,7 +33,6 @@ function CitySection({ city, posts }) {
 
   const [userLocation, setUserLocation] = useState(null);
 
-  // Get user's current location (robust)
   useEffect(() => {
     if (!("geolocation" in navigator)) return;
     const options = { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 };
@@ -48,7 +45,7 @@ function CitySection({ city, posts }) {
       },
       (err) => {
         console.warn("Location access denied/unavailable:", err);
-        setUserLocation(null); // graceful fallback
+        setUserLocation(null);
       },
       options
     );
@@ -77,21 +74,20 @@ function CitySection({ city, posts }) {
 
       <div className="cards-wrapper">
         {posts.map((post) => {
-          // ---- distance calc (uses post coords if available; falls back to city center) ----
-          let distanceText = "Distance unavailable";
-          const destLatLng = parseLatLng(post.location);
+          // Distance:
+          // - user ON  -> user->post
+          // - user OFF -> cityCenter->post
+          const postLL = parseLatLng(post.location);
           const center = cityCenters[post.city];
 
-          if (userLocation) {
-            const target = destLatLng || center;
-            if (target) {
-              const dist = getDistanceFromLatLonInKm(
-                userLocation.lat,
-                userLocation.lng,
-                target.lat,
-                target.lng
+          let distanceText = "—";
+          if (postLL) {
+            const origin = userLocation ?? center;
+            if (origin) {
+              const km = getDistanceFromLatLonInKm(
+                origin.lat, origin.lng, postLL.lat, postLL.lng
               );
-              distanceText = `${dist.toFixed(2)}`;
+              distanceText = `${km.toFixed(2)} km`;
             }
           }
 
@@ -114,13 +110,12 @@ function CitySection({ city, posts }) {
                     <strong>District:</strong> {post.district}
                   </p>
                   <p className="card-text text-muted mb-1">
-                    <strong>Dist. From City:</strong> {distanceText} km
+                    <strong>Distance:</strong> {distanceText}
                   </p>
                   <p className="card-text text-muted mb-1">
                     <strong>Uploaded by:</strong> {post.name}
                   </p>
 
-                  {/* Directions button (origin=user location if allowed) */}
                   <a
                     href={buildDirectionsUrl(userLocation, post.location)}
                     target="_blank"
