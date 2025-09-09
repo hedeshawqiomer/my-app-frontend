@@ -1,7 +1,6 @@
 // src/components/PublicpagesComponents/HomepageComponents/CardCourselMainPage.jsx
 import React, { useEffect, useState } from "react";
 import { listPublicPosts } from "../../../api/public";
-
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 

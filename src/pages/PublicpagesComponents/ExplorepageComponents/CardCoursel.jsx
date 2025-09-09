@@ -1,53 +1,53 @@
-// src/pages/CityCatgories.jsx  (your file name)
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import Navbar from "./PublicpagesComponents/Navbar";
-import Footer from "./PublicpagesComponents/Footer";
-import Offcanvas from "./PublicpagesComponents/Offcanvas";
-import CitySection from "./PublicpagesComponents/ExplorepageComponents/CitySection";
-import { listPublicPosts } from "../api/public";
-import "../assets/custom_css2.css";
-
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
-
-function CityCategories() {
-  const location = useLocation();
-  const [acceptedPosts, setAcceptedPosts] = useState([]);
-
-  // fetch accepted posts from backend
-  useEffect(() => {
-    (async () => {
-      const data = await listPublicPosts();
-      setAcceptedPosts(data || []);
-    })();
-  }, []);
-
-  // scroll to hash
-  useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace('#', '');
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-  }, [location.hash]);
-
-  const cities = ["Erbil", "Sulaimani", "Duhok", "Halabja"];
-
+import React from "react";
+import "../../../assets/custom_css2.css"
+// CardCoursel.jsx
+function CardCoursel({ post }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const toAbs = (u) => (u?.startsWith("/") ? `${API_BASE}${u}` : u || "");
   return (
-    <>
-      <Navbar />
-      {cities.map(city => (
-        <CitySection
-          key={city}
-          city={city}
-          posts={acceptedPosts.filter(p => p.city === city)}
-        />
-      ))}
-      <Footer />
-      <Offcanvas />
-    </>
+    <div
+      className="modal fade"
+      id={`carouselModal-${post.id}`}
+      tabIndex="-1"
+    >
+      <div className="modal-dialog modal-dialog-centered custom-carousel-modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">{post.city}</h5>
+            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div className="modal-body">
+            <div id={`carousel-${post.id}`} className="carousel slide" data-bs-ride="carousel">
+              <div className="carousel-inner">
+          {(post.images || []).map((img, i) => (
+  <div className={`carousel-item ${i === 0 ? "active" : ""}`} key={img.id ?? i}>
+    <img src={toAbs(img.url)} className="d-block w-100 carousel-img" alt={`Slide ${i}`} />
+  </div>
+))}
+
+              </div>
+              <button
+                className="carousel-control-prev"
+                type="button"
+                data-bs-target={`#carousel-${post.id}`}
+                data-bs-slide="prev"
+              >
+                <span className="carousel-control-prev-icon"></span>
+              </button>
+              <button
+                className="carousel-control-next"
+                type="button"
+                data-bs-target={`#carousel-${post.id}`}
+                data-bs-slide="next"
+              >
+                <span className="carousel-control-next-icon"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
-export default CityCategories;
+
+export default  CardCoursel;
