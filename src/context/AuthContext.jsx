@@ -3,21 +3,21 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import { apiLogin, apiMe, apiLogout } from "../api/auth";
 
 const AuthContext = createContext(null);
+
 // eslint-disable-next-line react-refresh/only-export-components
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export const useAuth = () => useContext(AuthContext);
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);   // null | { id, email, role }
   const [booted, setBooted] = useState(false);
 
-  // Boot — ask the server who I am (uses session cookie)
+  // Boot once – ask server who I am (cookie session)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const me = await apiMe(); // GET /auth/me
-        if (mounted) setUser(me);
+        const me = await apiMe();     // GET /auth/me
+        if (mounted) setUser(me || null);
       } catch {
         if (mounted) setUser(null);
       } finally {
@@ -27,7 +27,6 @@ export function AuthProvider({ children }) {
     return () => { mounted = false; };
   }, []);
 
-  // Login — call backend, set user; keep same return shape used by your pages
   const login = async (email, password) => {
     try {
       const me = await apiLogin(email, password); // POST /auth/login
@@ -39,21 +38,28 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout — clear server session + local state
   const logout = async () => {
-    try { await apiLogout(); } catch {
-      // ignore, still clear local state
-    }
+    try { await apiLogout(); } catch { /* ignore */ }
     setUser(null);
   };
+
   const hasRole = (allowed = []) => {
     if (!user) return false;
-    return allowed.length === 0 || allowed.includes(user.role);
+    if (!allowed?.length) return true;
+    const wanted = new Set(allowed.map((r) => String(r || "").toLowerCase()));
+    return wanted.has(String(user.role || "").toLowerCase());
   };
 
   const value = useMemo(() => ({ user, booted, login, logout, hasRole }), [user, booted]);
 
-  if (!booted) return null; // or a global spinner
+  // Optional: a global splash while booting (prevents any flash everywhere)
+  if (!booted) {
+    return (
+      <div className="text-center py-5" role="status" aria-live="polite">
+        Loading…
+      </div>
+    );
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -116,7 +116,9 @@ function UserPost() {
       setShowDistrict(false);
       setImages([]);
 
-      navigate("/submitted-posts");
+sessionStorage.setItem("fromSubmission", "true"); // optional: survive redirects
+navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true });
+
     } catch (err) {
       console.error(err);
       setWarning(err?.response?.data?.error || "Failed to submit. Try again.");

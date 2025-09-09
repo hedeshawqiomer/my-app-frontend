@@ -1,6 +1,6 @@
 // src/pages/admin/AdminLogin.jsx
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import BackendFooter from "./DashboardComponents/BackendFooter";
 import { useAuth } from "../../context/AuthContext";
 import { sanitizeNextPath } from "../../utills/nav";
@@ -16,7 +16,7 @@ export default function AdminLogin() {
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState("");
 
-  // If already authed, go straight to a role-safe landing
+  // Already authed? Go to role-safe landing immediately
   useEffect(() => {
     if (!booted || !user) return;
     const safe = user.role === "super" ? "/admin/accepted" : "/admin/pending";
@@ -36,18 +36,28 @@ export default function AdminLogin() {
       return;
     }
 
-    const role = res.role;
-    const safeDefault = role === "super" ? "/admin/accepted" : "/admin/pending";
-    const rawNext = location.state?.next;
-    const sanitizedNext = sanitizeNextPath(rawNext);
-    const target = role === "super" ? sanitizedNext || safeDefault : safeDefault;
+    // Preferred destination: state.next (or any stored “postLoginNext” from 401)
+    const rawNext =
+      location.state?.next ||
+      (() => {
+        try {
+          const s = sessionStorage.getItem("postLoginNext");
+          sessionStorage.removeItem("postLoginNext");
+          return s || "";
+        } catch {
+          return "";
+        }
+      })();
 
-    // Optional: persist a “remember me” hint
+    const next = sanitizeNextPath(rawNext);
+    const safeDefault = res.role === "super" ? "/admin/accepted" : "/admin/pending";
+    const target = res.role === "super" ? next || safeDefault : safeDefault;
+
     try {
       const store = remember ? localStorage : sessionStorage;
       store.setItem("adminRemember", remember ? "1" : "0");
     } catch {
-      // ignore
+      /* ignore */
     }
 
     navigate(target, { replace: true });
@@ -67,15 +77,9 @@ export default function AdminLogin() {
 
   return (
     <div className="d-flex flex-column min-vh-100 m-4">
-      <main
-        className="form-signin w-100 m-auto py-4"
-        style={{ maxWidth: "400px" }}
-      >
+      <main className="form-signin w-100 m-auto py-4" style={{ maxWidth: 400 }}>
         <form onSubmit={onSubmit} noValidate>
-          <h1 className="h3 mb-3 fw-bold d-flex align-items-center">
-            Admin Portal
-          </h1>
-
+          <h1 className="h3 mb-3 fw-bold d-flex align-items-center">Admin Portal</h1>
           <p className="text-muted mb-4">Administrator Login</p>
 
           {err && (
@@ -125,17 +129,11 @@ export default function AdminLogin() {
             </label>
           </div>
 
-          <button
-            className="btn btn-primary w-100 py-2"
-            type="submit"
-            disabled={submitting}
-          >
+          <button className="btn btn-primary w-100 py-2" type="submit" disabled={submitting}>
             {submitting ? "Signing in…" : "Sign in"}
           </button>
 
-          <p className="mt-5 mb-3 text-body-secondary text-center">
-            © 2025 EKurdistan
-          </p>
+          <p className="mt-5 mb-3 text-body-secondary text-center">© 2025 EKurdistan</p>
         </form>
       </main>
       <BackendFooter />
