@@ -5,15 +5,17 @@ import {  useNavigate } from "react-router-dom";
 function Offcanvas() {
   const navigate = useNavigate();
 
- const go = (hash) => (e) => {
-  e.preventDefault();
-  const safe = `#${encodeURIComponent(hash.replace(/^#/, ""))}`;
-  navigate(`/city-categories${safe}`);
-  if (window.bootstrap) {
-    const el = document.getElementById("offcanvasRight");
-    window.bootstrap.Offcanvas.getOrCreateInstance(el).hide();
-  }
-};
+  const go = (hash) => (e) => {
+    e.preventDefault();
+    // navigate to the route with hash
+    navigate(`/city-categories${hash}`);
+    // close the offcanvas via Bootstrap API
+    if (window.bootstrap) {
+      const el = document.getElementById('offcanvasRight');
+      const inst = window.bootstrap.Offcanvas.getOrCreateInstance(el);
+      inst.hide();
+    }
+  };
 
   return (
     <div
@@ -39,10 +41,10 @@ function Offcanvas() {
         <div className="d-grid gap-2">
           {/* We use <a> with onClick to run our close logic.
               If you prefer <Link>, attach onClick={go('#Erbil')} to it as well. */}
-          <a href="/city-categories#Erbil"  className="btn gradient-btn text-dark" onClick={go("#Erbil")}>Erbil</a>
-          <a href="/city-categories#Slemani"  className="btn gradient-btn text-dark" onClick={go("#Slemani")}>Slemani</a>
-          <a href="/city-categories#Duhok"  className="btn gradient-btn text-dark" onClick={go("#Duhok")}>Duhok</a>
-          <a href="/city-categories#Halabjs"  className="btn gradient-btn text-dark" onClick={go("#Halabjs")}>Halabja</a>
+          <a href="/city-categories#Erbil" className="btn gradient-btn text-dark" onClick={go('#Erbil')}>Erbil</a>
+          <a href="/city-categories#Slemani" className="btn gradient-btn text-dark" onClick={go('#Slemani')}>Slemani</a>
+          <a href="/city-categories#Duhok" className="btn gradient-btn text-dark" onClick={go('#Duhok')}>Duhok</a>
+          <a href="/city-categories#Halabja" className="btn gradient-btn text-dark" onClick={go('#Halabja')}>Halabja</a>
         </div>
       </div>
     </div>

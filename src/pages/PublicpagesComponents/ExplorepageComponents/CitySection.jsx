@@ -1,80 +1,63 @@
-// src/components/PublicpagesComponents/ExplorepageComponents/CitySection.jsx
 import React, { useState, useEffect } from "react";
 import CardCoursel from "./CardCoursel";
 import cityCenters from "../../../utills/CityCenter";
 import { getDistanceFromLatLonInKm } from "../../../utills/Geolocation";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
+function CitySection({ city, posts }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+  const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 
-// Allow only http/https for string URLs (defensive)
-function safeHttpUrl(u) {
-  if (!u || typeof u !== "string") return "";
-  try {
-    const url = new URL(u, window.location.origin);
-    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
-  } catch {
-    return "";
+  // ---------- Helpers ----------
+  // Parse "lat,lng" text to { lat, lng } or return null
+  function parseLatLng(input) {
+    if (!input || typeof input !== "string") return null;
+    const m = input.trim().match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
+    if (!m) return null;
+    const lat = parseFloat(m[1]);
+    const lng = parseFloat(m[3]);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+    return { lat, lng };
   }
-}
 
-// Parse "lat,lng" to { lat, lng } or null
-function parseLatLng(input) {
-  if (!input || typeof input !== "string") return null;
-  const m = input.trim().match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
-  if (!m) return null;
-  const lat = parseFloat(m[1]);
-  const lng = parseFloat(m[3]);
-  if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
-  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
-  return { lat, lng };
-}
+  // Build a Google Maps Directions URL
+  function buildDirectionsUrl(userLoc, destStr, travelMode = "driving") {
+    const destLatLng = parseLatLng(destStr);
+    const base = "https://www.google.com/maps/dir/?api=1";
+    const destinationParam = destLatLng
+      ? `destination=${destLatLng.lat},${destLatLng.lng}`
+      : `destination=${encodeURIComponent(destStr || "")}`;
+    const originParam = userLoc ? `origin=${userLoc.lat},${userLoc.lng}` : null;
+    const modeParam = `travelmode=${encodeURIComponent(travelMode)}`;
+    return [base, originParam, destinationParam, modeParam].filter(Boolean).join("&");
+  }
+  // -----------------------------
 
-// Build Google Maps directions URL
-function buildDirectionsUrl(userLoc, destStr, travelMode = "driving") {
-  const destLatLng = parseLatLng(destStr);
-  const base = "https://www.google.com/maps/dir/?api=1";
-  const destinationParam = destLatLng
-    ? `destination=${destLatLng.lat},${destLatLng.lng}`
-    : `destination=${encodeURIComponent(destStr || "")}`;
-  const originParam = userLoc ? `origin=${userLoc.lat},${userLoc.lng}` : null;
-  const modeParam = `travelmode=${encodeURIComponent(travelMode)}`;
-  return [base, originParam, destinationParam, modeParam].filter(Boolean).join("&");
-}
-
-export default function CitySection({ city, posts }) {
   const [userLocation, setUserLocation] = useState(null);
 
-  // Get user's current location (with cleanup)
+  // Get user's current location (robust)
   useEffect(() => {
     if (!("geolocation" in navigator)) return;
-    let cancelled = false;
-
+    const options = { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 };
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        if (cancelled) return;
         setUserLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
       },
       (err) => {
-        if (cancelled) return;
         console.warn("Location access denied/unavailable:", err);
-        setUserLocation(null);
+        setUserLocation(null); // graceful fallback
       },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+      options
     );
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   return (
-    <section className="secondsec3 py-4" id={city}>
+    <section className="secondsec3" id={city}>
       <h3
-        className="section-heading text-success mb-2"
+        className="section-heading text-success"
         style={{
           fontSize: "58px",
           fontFamily: "sans-serif",
@@ -88,21 +71,13 @@ export default function CitySection({ city, posts }) {
         {`Welcome to ${city}`}
       </h3>
 
-      {!posts.length && (
-        <p className="section-description">No approved posts yet for this city.</p>
-      )}
+      <p className="section-description">
+        {posts.length ? null : "No approved posts yet for this city."}
+      </p>
 
       <div className="cards-wrapper">
         {posts.map((post) => {
-          // image can be string or {url}
-          const firstImg =
-            safeHttpUrl(
-              typeof post.images?.[0] === "string"
-                ? post.images[0]
-                : post.images?.[0]?.url
-            ) || toAbs(post.images?.[0]?.url) || "/pictures/placeholder.jpg";
-
-          // distance calc
+          // ---- distance calc (uses post coords if available; falls back to city center) ----
           let distanceText = "Distance unavailable";
           const destLatLng = parseLatLng(post.location);
           const center = cityCenters[post.city];
@@ -120,21 +95,16 @@ export default function CitySection({ city, posts }) {
             }
           }
 
-          const pid = post.id ?? `${post.city}-${post.createdAt}`;
-
           return (
-            <div className="half-card" key={pid}>
+            <div className="half-card" key={post.id}>
               <div className="card">
                 <img
-                  src={firstImg}
+                  src={toAbs(post.images?.[0]?.url)}
                   className="card-img-top"
-                  alt={post.name || `${post.city} resort`}
-                  loading="lazy"
-                  width="1200"
-                  height="800"
+                  alt={post.name}
                   style={{ cursor: "pointer" }}
                   data-bs-toggle="modal"
-                  data-bs-target={`#carouselModal-${pid}`}
+                  data-bs-target={`#carouselModal-${post.id}`}
                 />
                 <div className="card-body">
                   <h5 className="card-title text-success fw-bold">
@@ -150,6 +120,7 @@ export default function CitySection({ city, posts }) {
                     <strong>Uploaded by:</strong> {post.name}
                   </p>
 
+                  {/* Directions button (origin=user location if allowed) */}
                   <a
                     href={buildDirectionsUrl(userLocation, post.location)}
                     target="_blank"
@@ -170,11 +141,12 @@ export default function CitySection({ city, posts }) {
         })}
       </div>
 
-      {/* Carousels */}
-      {posts.map((post) => {
-        const pid = post.id ?? `${post.city}-${post.createdAt}`;
-        return <CardCoursel key={pid} post={{ ...post, _pid: pid }} />;
-      })}
+      {/* Carousel for this city's posts */}
+      {posts.map((post) => (
+        <CardCoursel key={post.id} post={post} />
+      ))}
     </section>
   );
 }
+
+export default CitySection;
