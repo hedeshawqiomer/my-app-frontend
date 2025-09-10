@@ -21,7 +21,7 @@ export default function CardCoursel({ post }) {
           <div className="modal-body">
             <div id={carouselId} className="carousel slide" data-bs-ride="false">
               {/* indicators */}
-              <div className="carousel-indicators">
+        
                 {images.map((_, i) => (
                   <button
                     key={`ind-${post.id}-${i}`}
@@ -33,7 +33,7 @@ export default function CardCoursel({ post }) {
                     aria-label={`Slide ${i + 1}`}
                   />
                 ))}
-              </div>
+           
 
               {/* slides */}
               <div className="carousel-inner">
