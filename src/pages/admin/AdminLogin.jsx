@@ -23,6 +23,17 @@ export default function AdminLogin() {
     navigate(safe, { replace: true });
   }, [booted, user, navigate]);
 
+  // Helper: read ?next= from querystring
+  const nextFromSearch = (() => {
+    try {
+      const sp = new URLSearchParams(location.search);
+      const raw = sp.get("next") || "";
+      return raw;
+    } catch {
+      return "";
+    }
+  })();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
@@ -36,7 +47,7 @@ export default function AdminLogin() {
       return;
     }
 
-    // Preferred destination: state.next (or any stored “postLoginNext” from 401)
+    // Preferred destination: state.next → sessionStorage → ?next=
     const rawNext =
       location.state?.next ||
       (() => {
@@ -47,7 +58,8 @@ export default function AdminLogin() {
         } catch {
           return "";
         }
-      })();
+      })() ||
+      nextFromSearch;
 
     const next = sanitizeNextPath(rawNext);
     const safeDefault = res.role === "super" ? "/admin/accepted" : "/admin/pending";
@@ -56,9 +68,7 @@ export default function AdminLogin() {
     try {
       const store = remember ? localStorage : sessionStorage;
       store.setItem("adminRemember", remember ? "1" : "0");
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
 
     navigate(target, { replace: true });
     setSubmitting(false);
@@ -66,10 +76,7 @@ export default function AdminLogin() {
 
   if (!booted) {
     return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "40vh" }}
-      >
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "40vh" }}>
         <div className="text-muted">Loading…</div>
       </div>
     );
@@ -82,51 +89,34 @@ export default function AdminLogin() {
           <h1 className="h3 mb-3 fw-bold d-flex align-items-center">Admin Portal</h1>
           <p className="text-muted mb-4">Administrator Login</p>
 
-          {err && (
-            <div className="alert alert-danger py-2" role="alert">
-              {err}
-            </div>
-          )}
+          {err && <div className="alert alert-danger py-2" role="alert">{err}</div>}
 
           <div className="form-floating mb-3">
             <input
-              type="email"
-              className="form-control"
-              id="floatingInput"
-              placeholder="name@example.com"
-              value={email}
+              type="email" className="form-control" id="floatingInput"
+              placeholder="name@example.com" value={email}
               onChange={(e) => setEmail(e.target.value)}
-              autoComplete="username"
-              required
+              autoComplete="username" required
             />
             <label htmlFor="floatingInput">Email address</label>
           </div>
 
           <div className="form-floating mb-3">
             <input
-              type="password"
-              className="form-control"
-              id="floatingPassword"
-              placeholder="Password"
-              value={password}
+              type="password" className="form-control" id="floatingPassword"
+              placeholder="Password" value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
+              autoComplete="current-password" required
             />
             <label htmlFor="floatingPassword">Password</label>
           </div>
 
           <div className="form-check text-start my-3">
             <input
-              className="form-check-input"
-              type="checkbox"
-              id="checkDefault"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
+              className="form-check-input" type="checkbox" id="checkDefault"
+              checked={remember} onChange={(e) => setRemember(e.target.checked)}
             />
-            <label className="form-check-label" htmlFor="checkDefault">
-              Remember me
-            </label>
+            <label className="form-check-label" htmlFor="checkDefault">Remember me</label>
           </div>
 
           <button className="btn btn-primary w-100 py-2" type="submit" disabled={submitting}>

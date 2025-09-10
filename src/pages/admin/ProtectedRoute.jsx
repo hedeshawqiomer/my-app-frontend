@@ -4,16 +4,23 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { sanitizeNextPath } from "../../utills/nav";
 
-const toRoleSet = (arr) =>
-  new Set((arr || []).map((r) => String(r || "").toLowerCase()));
+const toSet = (v) =>
+  new Set([].concat(v || []).map((r) => String(r || "").toLowerCase()));
 
 export default function ProtectedRoute({ allow = ["super", "moderator"] }) {
   const { user, booted, hasRole } = useAuth();
   const location = useLocation();
-  const allowed = toRoleSet(allow);
+
+  // Build the full requested path
+  const requested =
+    (location?.pathname || "/") +
+    (location?.search || "") +
+    (location?.hash || "");
+
+  const allowed = toSet(allow);
   const userRole = String(user?.role || "").toLowerCase();
 
-  // Block rendering entirely until auth has booted to avoid “flash”.
+  // 1) Wait for auth boot to avoid any flash
   if (!booted) {
     return (
       <div className="text-center py-5" role="status" aria-live="polite">
@@ -22,21 +29,23 @@ export default function ProtectedRoute({ allow = ["super", "moderator"] }) {
     );
   }
 
-  // Not logged in → go to login, remember where we wanted to go
+  // 2) Not logged in -> only capture "next" if it’s an admin route
   if (!user) {
-    const next = sanitizeNextPath(location.pathname + location.search);
+    const wantsAdmin = requested.startsWith("/admin");
+    const next = wantsAdmin ? sanitizeNextPath(requested) : "";
     return <Navigate to="/admin/login" replace state={{ next }} />;
   }
 
-  // Role check (support both hasRole helper and local set)
-  const ok = hasRole ? hasRole(allow) : allowed.has(userRole);
+  // 3) Role check
+  const ok = hasRole ? hasRole(Array.from(allowed)) : allowed.has(userRole);
 
-  // If logged in but not allowed: send them to a safe tab for their role
+  // 4) If logged in but not allowed -> redirect to a safe tab for their role
   if (!ok) {
     const safe = userRole === "super" ? "/admin/accepted" : "/admin/pending";
     if (location.pathname !== safe) return <Navigate to={safe} replace />;
     return <Outlet />;
   }
 
+  // 5) Allowed -> render nested route
   return <Outlet />;
 }

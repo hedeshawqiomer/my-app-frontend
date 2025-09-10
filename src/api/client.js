@@ -11,16 +11,17 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     const status = err?.response?.status;
-    if (status === 401) {
+    if (status === 401 && typeof window !== "undefined") {
+      const path = window.location.pathname;
       const isAdminRoute =
-        typeof window !== "undefined" &&
-        window.location.pathname.startsWith("/admin") &&
-        window.location.pathname !== "/admin/login";
+        path.startsWith("/admin") && path !== "/admin/login";
 
       // only bounce to login for protected admin screens
       if (isAdminRoute) {
-        const next = window.location.pathname;
-        const url = `/admin/login${next ? `?next=${encodeURIComponent(next)}` : ""}`;
+        try {
+          sessionStorage.setItem("postLoginNext", path);
+        } catch { /* ignore */ }
+        const url = `/admin/login?next=${encodeURIComponent(path)}`;
         window.location.replace(url);
       }
     }

@@ -2,8 +2,12 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+// ...
 
 export default function Navbar({ adminMode = false }) {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const authed = !!user;
   const role = user?.role;
@@ -88,15 +92,18 @@ export default function Navbar({ adminMode = false }) {
             )}
             {authed && adminMode && (
               <li className="nav-item">
-                <button
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() => {
-                    logout();
-                    window.location.href = "/";
-                  }}
-                >
-                  Logout
-                </button>
+            
+
+<button
+  className="btn btn-sm btn-outline-secondary"
+  onClick={async () => {
+    await logout();
+    navigate("/", { replace: true });
+  }}
+>
+  Logout
+</button>
+
               </li>
             )}
           </ul>
