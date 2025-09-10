@@ -2,11 +2,11 @@ import React from "react";
 
 export default function BackendHeader({  showCityFilter = false, onCityChange }) {
   return (
-    <div className="mt-2 pt-1 mb-2 pb-1 ">
+    <div className="mt-1 pt-1 mb-1 pb-1 ">
   
 
       {showCityFilter && (
-        <div className="row g-2 align-items-center mb-3">
+        <div className="row g-2 align-items-center mb-1">
           <div className="col-12 col-md-6 order-2 order-md-1"></div>
           <div className="col-12 col-md-6 d-flex justify-content-center justify-content-md-end order-1 order-md-2">
             <select
