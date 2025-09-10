@@ -1,9 +1,7 @@
-// src/pages/admin/Pendingposts.jsx
 import React, { useEffect, useState, useRef } from "react";
-import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
-import { listPosts, acceptPost, deletePostById } from "../../api/post";
-import EachPenddingpost from "./DashboardComponents/EachPenddingpost";
+import { listPosts, acceptPost, deletePostById } from "../../api/post"; // fixed module
+import PendingPostRow from "./DashboardComponents/EachPenddingpost";         // unified name
 import DashboardHeader from "./DashboardComponents/BackendHeader";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
@@ -15,36 +13,33 @@ function Pendingposts() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-const lbRef = useRef(null);
+  const lbRef = useRef(null);
 
-useEffect(() => {
-  if (pendingPosts?.[0]) {
-    console.log("SAMPLE POST:", pendingPosts[0]);
-  }
-}, [pendingPosts]);
-
-useEffect(() => {
-  if (lbRef.current) {
-    try { lbRef.current.destroy(); } catch {
-      // ignore
-    }
-    lbRef.current = null;
-  }
-  if (!document.querySelector(".glightbox")) return;
-
-  import("glightbox").then(({ default: GLightbox }) => {
-    lbRef.current = GLightbox({ selector: ".glightbox", loop: true });
-  });
-
-  return () => {
-    if (lbRef.current) {
-      try { lbRef.current.destroy(); } catch {
-        // ignore
+  // (Re)initialize GLightbox whenever rows change
+  useEffect(() => {
+    (async () => {
+      // destroy old instance
+      if (lbRef.current) {
+        try { lbRef.current.destroy(); } catch {
+            //
+        }
+        lbRef.current = null;
       }
-      lbRef.current = null;
-    }
-  };
-}, [pendingPosts]); // or [data] – whatever you map over
+      // only init if anchors are present
+      if (!document.querySelector(".glightbox")) return;
+      const { default: GLightbox } = await import("glightbox");
+      lbRef.current = GLightbox({ selector: ".glightbox", loop: true });
+    })();
+
+    return () => {
+      if (lbRef.current) {
+        try { lbRef.current.destroy(); } catch {
+            //
+        }
+        lbRef.current = null;
+      }
+    };
+  }, [pendingPosts]);
 
   const load = async () => {
     try {
@@ -62,19 +57,13 @@ useEffect(() => {
 
   useEffect(() => { load(); }, [cityFilter]);
 
-  // Init lightbox AFTER DOM contains thumbnails
-
-
   const onAccept = async (id) => { await acceptPost(id); await load(); };
   const onDelete = async (id) => { await deletePostById(id); await load(); };
 
   return (
     <>
       <div className="container-fluid mt-5 pt-4">
-      <DashboardHeader
-        showCityFilter
-        onCityChange={setCityFilter}
-      />
+        <DashboardHeader showCityFilter onCityChange={setCityFilter} />
       </div>
 
       <div className="bg-white pt-3 pe-3 ps-3 p-md-4 rounded shadow">
@@ -96,22 +85,26 @@ useEffect(() => {
               </tr>
             </thead>
             <tbody>
-{pendingPosts?.length
-  ? pendingPosts.map((post, idx) => (
-      <EachPenddingpost
-        key={post.id}
-        index={idx}
-        post={post}
-        toAbs={toAbs}
-        onAccept={() => onAccept(post.id)}
-        onDelete={() => onDelete(post.id)}
-      />
-    ))
-  : (!loading && !err) && (
-      <tr><td colSpan="8" className="text-center text-muted">No pending posts.</td></tr>
-    )
-}
-
+              {pendingPosts?.length ? (
+                pendingPosts.map((post, idx) => (
+                  <PendingPostRow
+                    key={post.id}
+                    index={idx}
+                    post={post}
+                    toAbs={toAbs}
+                    onAccept={() => onAccept(post.id)}
+                    onDelete={() => onDelete(post.id)}
+                  />
+                ))
+              ) : (
+                !loading && !err && (
+                  <tr>
+                    <td colSpan="8" className="text-center text-muted">
+                      No pending posts.
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>

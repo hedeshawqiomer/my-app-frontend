@@ -1,21 +1,27 @@
-// src/pages/admin/AcceptedPosts.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
-import DashboardHeader from "./DashboardComponents/BackendHeader";;
+
+import BackendHeader from "./DashboardComponents/BackendHeader";
 import PostCard from "./DashboardComponents/EachAcceptedPost";
-import EachEditingAccpetpost from "./DashboardComponents/EachEditingAccpetpost";
-import { listPosts, updatePostById, deletePostById  } from "../../api/post";
+import EditPostModal from "./DashboardComponents/EachEditingAccpetpost";
+
 import {
-  deletePostImagesBulk,           // ← preferred
+  listPosts,
+  updatePostById,
+  deletePostById,
+  deletePostImagesBulk,
   deletePostImageById,
   deletePostImageByUrl,
 } from "../../api/post";
 import { imgUrl } from "../../utills/URL";
 
-
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const toAbs = (u) => (u?.startsWith("/") ? `${API_BASE}${u}` : u || "");
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
+const toAbs = (u) => {
+  if (!u) return "";
+  if (/^https?:\/\//i.test(u)) return u;
+  return u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`;
+};
 
 const CITY_DISTRICTS = {
   Erbil: ["Soran", "Shaqlawa", "Mergasor", "Koya"],
@@ -31,7 +37,7 @@ export default function AcceptedPosts() {
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  
+
   const load = async () => {
     try {
       setLoading(true);
@@ -52,12 +58,15 @@ export default function AcceptedPosts() {
 
   useEffect(() => { load(); }, [city]);
 
-  // bind lightbox to currently rendered items (depend on data, not all)
+  // Filter view data by city (keeps sort)
   const data = useMemo(() => all.filter((p) => (city ? p.city === city : true)), [all, city]);
 
+  // Bind GLightbox to currently-rendered DOM
   useEffect(() => {
-    const lb = GLightbox({ selector: ".glightbox" });
-    return () => lb.destroy();
+    const lb = GLightbox({ selector: ".glightbox", loop: true });
+    return () => { try { lb.destroy(); } catch {
+        //
+    } };
   }, [data]);
 
   const onDelete = async (id) => {
@@ -71,11 +80,8 @@ export default function AcceptedPosts() {
 
   return (
     <>
-  <div className="container-fluid mt-5 pt-4">
-        <DashboardHeader
-          showCityFilter
-          onCityChange={setCity}
-        />
+      <div className="container-fluid mt-5 pt-4">
+        <BackendHeader showCityFilter onCityChange={setCity} />
 
         {loading && <div className="alert alert-info">Loading…</div>}
         {err && <div className="alert alert-danger">{err}</div>}
@@ -89,50 +95,52 @@ export default function AcceptedPosts() {
                 <PostCard
                   post={p}
                   toAbs={toAbs}
-                  onEdit={(post) => setEditing({
-                    ...post,
-                    name: post.name ?? post.uploaderName ?? "",
-                    email: post.email ?? "",
-                    district: post.district ?? "",
-                    location: post.location ?? "",
-                  })}
+                  onEdit={(post) =>
+                    setEditing({
+                      ...post,
+                      name: post.name ?? post.uploaderName ?? "",
+                      email: post.email ?? "",
+                      district: post.district ?? "",
+                      location: post.location ?? "",
+                    })
+                  }
                   onDelete={onDelete}
                 />
               </div>
             ))}
           </div>
         )}
-      </div> {}
+      </div>
 
-<EachEditingAccpetpost
-  open={!!editing}
-  post={editing}
-  onClose={() => setEditing(null)}
-  CITY_DISTRICTS={CITY_DISTRICTS}
-    imageUrlFor={imgUrl}      
-  onSave={async (patch, { removeImageIds = [], removeImageUrls = [] }) => {
-    await updatePostById(editing.id, patch);
+      <EditPostModal
+        open={!!editing}
+        post={editing}
+        onClose={() => setEditing(null)}
+        CITY_DISTRICTS={CITY_DISTRICTS}
+        imageUrlFor={imgUrl}
+        onSave={async (patch, { removeImageIds = [], removeImageUrls = [] }) => {
+          if (!editing) return;
+          await updatePostById(editing.id, patch);
 
-    // Prefer one bulk call (fast):
-    if (removeImageIds.length || removeImageUrls.length) {
-      try {
-        await deletePostImagesBulk(editing.id, {
-          ids: removeImageIds,
-          urls: removeImageUrls,
-        });
-      } catch {
-        // Fallback to one-by-one if bulk not available yet
-        await Promise.all([
-          ...removeImageIds.map((id) => deletePostImageById(editing.id, id)),
-          ...removeImageUrls.map((url) => deletePostImageByUrl(editing.id, url)),
-        ]);
-      }
-    }
+          // Prefer single bulk call; fall back to per-image if not supported
+          if (removeImageIds.length || removeImageUrls.length) {
+            try {
+              await deletePostImagesBulk(editing.id, {
+                ids: removeImageIds,
+                urls: removeImageUrls,
+              });
+            } catch {
+              await Promise.all([
+                ...removeImageIds.map((id) => deletePostImageById(editing.id, id)),
+                ...removeImageUrls.map((url) => deletePostImageByUrl(editing.id, url)),
+              ]);
+            }
+          }
 
-    setEditing(null);
-    await load();
-  }}
-/>
+          setEditing(null);
+          await load();
+        }}
+      />
     </>
   );
 }

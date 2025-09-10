@@ -1,19 +1,19 @@
-// src/pages/admin/AcceptedPosts/components/PostCard.jsx
 import React from "react";
 
-export default function EachAcceptedpost({ post: p, toAbs, onEdit, onDelete }) {
+export default function PostCard({ post: p, toAbs, onEdit, onDelete }) {
+  const cover = Array.isArray(p.images) && p.images[0]?.url ? toAbs(p.images[0].url) : null;
+
   return (
     <div className="card h-100 shadow-sm">
-      {/* Cover */}
-      {Array.isArray(p.images) && p.images[0] ? (
+      {cover ? (
         <a
-          href={toAbs(p.images[0].url)}
+          href={cover}
           className="glightbox"
           data-type="image"
           data-gallery={`post-${p.id}`}
         >
           <img
-            src={toAbs(p.images[0].url)}
+            src={cover}
             alt=""
             className="card-img-top"
             style={{ height: 180, objectFit: "cover" }}

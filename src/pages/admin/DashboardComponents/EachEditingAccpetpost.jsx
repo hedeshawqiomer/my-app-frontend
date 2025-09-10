@@ -1,32 +1,17 @@
-// src/pages/admin/DashboardComponents/EditPostModal.jsx
 import React, { useEffect, useMemo, useState } from "react";
 
 export default function EditPostModal({
   open,
   post,
   onClose,
-  onSave,                // (patch, { removeImageUrls, removeImageIds })
+  onSave,                 // (patch, { removeImageUrls, removeImageIds })
   CITY_DISTRICTS,
-  imageUrlFor,          // optional custom normalizer passed from parent
+  imageUrlFor,           // optional normalizer
 }) {
   const [form, setForm] = useState({
     name: "", email: "", location: "", city: "", district: "",
   });
 
-  // ---- robust URL normalizer (fallback if imageUrlFor not provided)
-  const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
-  const toAbs = (u) => {
-    if (!u) return "";
-    if (/^https?:\/\//i.test(u)) return u;
-    if (u.startsWith("/")) return `${API_BASE}${u}`;  // "/uploads/x.jpg"
-    return `${API_BASE}/${u}`;                        // "uploads/x.jpg"
-  };
-  const urlOf = (img) =>
-    imageUrlFor
-      ? imageUrlFor(img)
-      : toAbs(typeof img === "string" ? img : (img?.url ?? img?.path ?? ""));
-
-  // ---- images + form
   const originalImages = useMemo(
     () => (Array.isArray(post?.images) ? post.images : []),
     [post]
@@ -48,6 +33,17 @@ export default function EditPostModal({
     setLocErr("");
     setLocating(false);
   }, [post]);
+
+  const urlOf = (img) =>
+    imageUrlFor
+      ? imageUrlFor(img)
+      : (() => {
+          const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
+          const u = typeof img === "string" ? img : (img?.url ?? img?.path ?? "");
+          if (!u) return "";
+          if (/^https?:\/\//i.test(u)) return u;
+          return u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`;
+        })();
 
   const toggleRemove = (idx) =>
     setRemoved((prev) => {
@@ -98,7 +94,6 @@ export default function EditPostModal({
       district: form.district,
     };
 
-    // gather removals (support objects-with-id/url or plain strings)
     const removeImageUrls = [...removed]
       .map((i) => {
         const x = originalImages[i];
@@ -122,8 +117,14 @@ export default function EditPostModal({
       tabIndex="-1"
       style={{ background: open ? "rgba(0,0,0,.6)" : "transparent" }}
       onClick={onClose}
+      aria-hidden={!open}
     >
-      <div className="modal-dialog modal-lg modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-dialog modal-lg modal-dialog-centered"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
         <div className="modal-content">
           <form onSubmit={submit}>
             <div className="modal-header">
@@ -136,7 +137,6 @@ export default function EditPostModal({
                 <div className="text-muted small">No post selected.</div>
               ) : (
                 <div className="row g-3">
-                  {/* Name */}
                   <div className="col-12 col-md-6">
                     <label className="form-label">Your Name</label>
                     <input
@@ -146,7 +146,6 @@ export default function EditPostModal({
                     />
                   </div>
 
-                  {/* Email */}
                   <div className="col-12 col-md-6">
                     <label className="form-label">Your Email (Optional)</label>
                     <input
@@ -157,7 +156,6 @@ export default function EditPostModal({
                     />
                   </div>
 
-                  {/* Location + Get Location */}
                   <div className="col-12">
                     <label className="form-label">Your Current Location (lat,lng)</label>
                     <div className="input-group">
@@ -180,7 +178,6 @@ export default function EditPostModal({
                     {locErr && <div className="text-danger small mt-1">{locErr}</div>}
                   </div>
 
-                  {/* City / District */}
                   <div className="col-12 col-md-6">
                     <label className="form-label">City</label>
                     <select
@@ -210,7 +207,6 @@ export default function EditPostModal({
                     </select>
                   </div>
 
-                  {/* Images (removal UI) */}
                   <div className="col-12">
                     <label className="form-label d-flex justify-content-between align-items-center">
                       <span>Images</span>
@@ -230,7 +226,7 @@ export default function EditPostModal({
                           return (
                             <div key={i} className="position-relative" style={{ width: 90, height: 80 }}>
                               <img
-                                src={urlOf(img)}              
+                                src={urlOf(img)}
                                 alt={`img-${i}`}
                                 style={{
                                   width: "100%",
@@ -257,9 +253,6 @@ export default function EditPostModal({
                         })}
                       </div>
                     )}
-                    {/* <div className="form-text">
-                      Click the red <b>✕</b> to mark an image for removal (it turns grey). Click again to restore.
-                    </div> */}
                   </div>
                 </div>
               )}

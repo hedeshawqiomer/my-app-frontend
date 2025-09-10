@@ -1,12 +1,11 @@
-// src/pages/admin/Pendingposts/components/PendingPostRow.jsx
 import React from "react";
 
-export default function EachPenddingpost({ index, post, toAbs, onAccept, onDelete }) {
+export default function PendingPostRow({ index, post, toAbs, onAccept, onDelete }) {
   return (
     <tr>
       <td>{index + 1}</td>
 
-      {/* Images cell with horizontal scroller + GLightbox anchors */}
+      {/* Images with horizontal scroller + GLightbox anchors */}
       <td style={{ width: 460 }}>
         <div
           className="image-scroll-container"
@@ -52,10 +51,11 @@ export default function EachPenddingpost({ index, post, toAbs, onAccept, onDelet
       <td>{post.city || "-"}</td>
       <td>{post.district || "-"}</td>
 
-      <td>
+      <td className="text-center">
         <a
           href={`https://maps.google.com?q=${encodeURIComponent(post.location || "")}`}
-          target="_blank" rel="noreferrer"
+          target="_blank"
+          rel="noreferrer"
           className="btn btn-outline-success btn-sm"
         >
           📍 On Map
@@ -71,4 +71,3 @@ export default function EachPenddingpost({ index, post, toAbs, onAccept, onDelet
     </tr>
   );
 }
- 
