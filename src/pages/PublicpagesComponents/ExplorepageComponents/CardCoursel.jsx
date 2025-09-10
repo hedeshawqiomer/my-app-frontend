@@ -1,46 +1,60 @@
+// src/components/PublicpagesComponents/ExplorepageComponents/CardCoursel.jsx
 import React from "react";
-import "../../../assets/custom_css2.css"
-// CardCoursel.jsx
-function CardCoursel({ post }) {
-  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const toAbs = (u) => (u?.startsWith("/") ? `${API_BASE}${u}` : u || "");
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
+
+export default function CardCoursel({ post }) {
+  const modalId = `modal-${post.id}`;
+  const carouselId = `carousel-${post.id}`;
+  const images = (post.images && post.images.length ? post.images : ["/pictures/placeholder.jpg"]);
+
   return (
-    <div
-      className="modal fade"
-      id={`carouselModal-${post.id}`}
-      tabIndex="-1"
-    >
-      <div className="modal-dialog modal-dialog-centered custom-carousel-modal">
+    <div className="modal fade" id={modalId} tabIndex="-1" aria-labelledby={`${modalId}-label`} aria-hidden="true">
+      <div className="modal-dialog modal-dialog-centered modal-lg">{/* stock classes only */}
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">{post.city}</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+            <h5 className="modal-title" id={`${modalId}-label`}>{post.city} — Gallery</h5>
+            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
           </div>
-          <div className="modal-body">
-            <div id={`carousel-${post.id}`} className="carousel slide" data-bs-ride="carousel">
-              <div className="carousel-inner">
-          {(post.images || []).map((img, i) => (
-  <div className={`carousel-item ${i === 0 ? "active" : ""}`} key={img.id ?? i}>
-    <img src={toAbs(img.url)} className="d-block w-100 carousel-img" alt={`Slide ${i}`} />
-  </div>
-))}
 
+          <div className="modal-body">
+            <div id={carouselId} className="carousel slide" data-bs-ride="false">
+              {/* indicators */}
+              <div className="carousel-indicators">
+                {images.map((_, i) => (
+                  <button
+                    key={`ind-${post.id}-${i}`}
+                    type="button"
+                    data-bs-target={`#${carouselId}`}
+                    data-bs-slide-to={i}
+                    className={i === 0 ? "active" : ""}
+                    aria-current={i === 0 ? "true" : undefined}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
               </div>
-              <button
-                className="carousel-control-prev"
-                type="button"
-                data-bs-target={`#carousel-${post.id}`}
-                data-bs-slide="prev"
-              >
-                <span className="carousel-control-prev-icon"></span>
+
+              {/* slides */}
+              <div className="carousel-inner">
+                {images.map((img, i) => {
+                  const src = typeof img === "string" ? img : toAbs(img?.url);
+                  return (
+                    <div className={`carousel-item ${i === 0 ? "active" : ""}`} key={`${post.id}-${i}`}>
+                      <img src={src || "/pictures/placeholder.jpg"} className="d-block w-100" alt={`Slide ${i + 1}`} />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* controls */}
+              <button className="carousel-control-prev" type="button" data-bs-target={`#${carouselId}`} data-bs-slide="prev">
+                <span className="carousel-control-prev-icon" aria-hidden="true" />
+                <span className="visually-hidden">Previous</span>
               </button>
-              <button
-                className="carousel-control-next"
-                type="button"
-                data-bs-target={`#carousel-${post.id}`}
-                data-bs-slide="next"
-              >
-                <span className="carousel-control-next-icon"></span>
+              <button className="carousel-control-next" type="button" data-bs-target={`#${carouselId}`} data-bs-slide="next">
+                <span className="carousel-control-next-icon" aria-hidden="true" />
+                <span className="visually-hidden">Next</span>
               </button>
             </div>
           </div>
@@ -49,5 +63,3 @@ const toAbs = (u) => (u?.startsWith("/") ? `${API_BASE}${u}` : u || "");
     </div>
   );
 }
-
-export default  CardCoursel;
