@@ -2,12 +2,12 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 // ...
 
 export default function Navbar({ adminMode = false }) {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { user, logout } = useAuth();
   const authed = !!user;
   const role = user?.role;
@@ -97,12 +97,27 @@ export default function Navbar({ adminMode = false }) {
 <button
   className="btn btn-sm btn-outline-secondary"
   onClick={async () => {
-    await logout();
-    navigate("/", { replace: true });
+    try {
+      await logout();                           // server logout + clear user in context
+    } finally {
+      // kill any stored next target so we never bounce to a protected page
+      try { sessionStorage.removeItem("postLoginNext"); } catch {
+        // ignore 
+      }
+      try { localStorage.removeItem("postLoginNext"); } catch {
+        // ignore
+      }
+
+      // replace the current history entry so Back won’t go to a protected route
+      // and land directly on the login page
+      window.location.replace("/");
+      // (using replace instead of navigate prevents the double-back issue)
+    }
   }}
 >
   Logout
 </button>
+
 
               </li>
             )}

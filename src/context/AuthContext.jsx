@@ -1,22 +1,19 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { apiLogin, apiMe, apiLogout } from "../api/auth";
 
 const AuthContext = createContext(null);
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);   // null | { id, email, role }
+  const [user, setUser] = useState(null);
   const [booted, setBooted] = useState(false);
 
-  // Boot once – ask server who I am (cookie session)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const me = await apiMe();     // GET /auth/me
+        const me = await apiMe();
         if (mounted) setUser(me || null);
       } catch {
         if (mounted) setUser(null);
@@ -29,7 +26,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const me = await apiLogin(email, password); // POST /auth/login
+      const me = await apiLogin(email, password);
       setUser(me);
       return { ok: true, role: me.role };
     } catch (err) {
@@ -39,8 +36,20 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try { await apiLogout(); } catch { /* ignore */ }
+  try { await apiLogout(); } catch { /* ignore */ }
     setUser(null);
+    try { await apiLogout(); } catch { /* ignore */ }
+    // tell the interceptor we are intentionally logging out
+    try { sessionStorage.setItem("loggingOut", "1"); } catch {
+      // ignore
+    }
+    setUser(null);
+    // clear any stale "next" and land on login by REPLACING history
+    try { sessionStorage.removeItem("postLoginNext"); } catch {
+      // ignore
+    }
+    // Replace so the previous entry isn't a protected admin page
+    window.location.replace("/admin/login");
   };
 
   const hasRole = (allowed = []) => {
@@ -52,14 +61,8 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(() => ({ user, booted, login, logout, hasRole }), [user, booted]);
 
-  // Optional: a global splash while booting (prevents any flash everywhere)
   if (!booted) {
-    return (
-      <div className="text-center py-5" role="status" aria-live="polite">
-        Loading…
-      </div>
-    );
+    return <div className="text-center py-5" role="status" aria-live="polite">Loading…</div>;
   }
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -12,18 +12,14 @@ export default function ProtectedRoute({ allow = ["super", "moderator"] }) {
   const allowed = toRoleSet(allow);
   const userRole = String(user?.role || "").toLowerCase();
 
-  if (!booted) {
-    return (
-      <div className="text-center py-5" role="status" aria-live="polite">
-        Checking access…
-      </div>
-    );
-  }
+if (!booted) {
+  return <div className="text-center py-5">Checking access…</div>;
+}
 
-  if (!user) {
-    const next = sanitizeNextPath(location.pathname + location.search);
-    return <Navigate to="/admin/login" replace state={{ next }} />;
-  }
+if (!user) {
+  const next = sanitizeNextPath(location.pathname + location.search);
+  return <Navigate to="/admin/login" replace state={{ next }} />;
+}
 
   const ok = hasRole ? hasRole(allow) : allowed.has(userRole);
 

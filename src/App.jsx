@@ -7,7 +7,7 @@ import UserPost from "./pages/UserPost";
 import AdminLogin from "./pages/admin/AdminLogin";
 import ProtectedRoute from "./pages/admin/ProtectedRoute";
 import SubmittedPosts from "./pages/SubmittedPosts";
-import Forbidden from "./pages/admin/DashboardComponents/Forrebiden";
+
 
 // Lazy admin screens
 const AdminLayout   = lazy(() => import("./pages/admin/DashboardComponents/AdminLayout.jsx"));
