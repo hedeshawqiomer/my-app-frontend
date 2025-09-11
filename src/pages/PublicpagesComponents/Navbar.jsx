@@ -110,8 +110,9 @@ export default function Navbar({ adminMode = false }) {
 
       // replace the current history entry so Back won’t go to a protected route
       // and land directly on the login page
+     // (using replace instead of navigate prevents the double-back issue)
       window.location.replace("/");
-      // (using replace instead of navigate prevents the double-back issue)
+   
     }
   }}
 >

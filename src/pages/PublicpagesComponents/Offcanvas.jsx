@@ -1,19 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+// Optional ESM fallback if you ever switch from bundle to module:
+// import { Offcanvas } from "bootstrap";
 
 function Offcanvas() {
   const navigate = useNavigate();
 
   const goCity = (city) => (e) => {
     e.preventDefault();
-    // navigate to hash (must match CitySection id exactly)
     navigate(`/city-categories#${encodeURIComponent(city)}`);
-    // close the offcanvas (works whether you used data attributes or API)
+
+    // Close the offcanvas
     const el = document.getElementById("offcanvasRight");
-    if (window.bootstrap && el) {
+    if (!el) return;
+
+    // Prefer window.bootstrap if you include bootstrap.bundle.min.js
+    if (window.bootstrap?.Offcanvas) {
       const inst = window.bootstrap.Offcanvas.getOrCreateInstance(el);
       inst?.hide();
     }
+    // Optional fallback if you import ESM instead:
+    // else if (Offcanvas) {
+    //   const inst = Offcanvas.getOrCreateInstance(el);
+    //   inst?.hide();
+    // }
   };
 
   return (
@@ -25,6 +35,9 @@ function Offcanvas() {
       aria-labelledby="offcanvasRightLabel"
     >
       <div className="offcanvas-header">
+        <h5 id="offcanvasRightLabel" className="mb-0">
+          City Category
+        </h5>
         <button
           type="button"
           className="btn-close"
@@ -34,24 +47,7 @@ function Offcanvas() {
       </div>
 
       <div className="offcanvas-body">
-        <h5 className="mb-3 text-dark fw-bold">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="ms-2 me-2"
-            width="20"
-            height="27"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0"/>
-            <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"/>
-          </svg>
-          City Category :
-        </h5>
-
         <div className="d-grid gap-2">
-          {/* IMPORTANT: these city names must match the <section id="..."> exactly */}
           <a
             href="/city-categories#Erbil"
             className="btn gradient-btn text-dark"
@@ -62,7 +58,7 @@ function Offcanvas() {
           </a>
 
           <a
-            href="/city-categories#Sulaimani"  // <- not "Slemani"
+            href="/city-categories#Sulaimani"
             className="btn gradient-btn text-dark"
             onClick={goCity("Sulaimani")}
             data-bs-dismiss="offcanvas"

@@ -14,6 +14,7 @@ const AdminLayout   = lazy(() => import("./pages/admin/DashboardComponents/Admin
 const Pendingposts  = lazy(() => import("./pages/admin/Pendingposts.jsx"));
 const AcceptedPosts = lazy(() => import("./pages/admin/AllpostsDashboard.jsx"));
 
+
 const Loader = () => <div className="text-center py-5">Loading…</div>;
 
 export default function App() {
