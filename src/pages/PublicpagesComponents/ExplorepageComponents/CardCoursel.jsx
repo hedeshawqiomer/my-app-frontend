@@ -7,7 +7,7 @@ const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 export default function CardCoursel({ post }) {
   const modalId = `modal-${post.id}`;
   const carouselId = `carousel-${post.id}`;
-  const images = (post.images && post.images.length ? post.images : ["/pictures/placeholder.jpg"]);
+  const images = (post.images && post.images.length ? post.images : ["/pictures/placeholder.png"]);
 
   return (
     <div className="modal fade" id={modalId} tabIndex="-1" aria-labelledby={`${modalId}-label`} aria-hidden="true">
@@ -31,7 +31,7 @@ export default function CardCoursel({ post }) {
                   const src = typeof img === "string" ? img : toAbs(img?.url);
                   return (
                     <div className={`carousel-item ${i === 0 ? "active" : ""}`} key={`${post.id}-${i}`}>
-                      <img src={src || "/pictures/placeholder.jpg"} className="d-block w-100" alt={`Slide ${i + 1}`} />
+                      <img src={src || "/pictures/placeholder.png"} className="d-block w-100" alt={`Slide ${i + 1}`} />
                     </div>
                   );
                 })}
