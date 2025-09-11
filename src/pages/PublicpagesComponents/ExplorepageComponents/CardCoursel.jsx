@@ -22,17 +22,7 @@ export default function CardCoursel({ post }) {
             <div id={carouselId} className="carousel slide" data-bs-ride="false">
               {/* indicators */}
         
-                {images.map((_, i) => (
-                  <button
-                    key={`ind-${post.id}-${i}`}
-                    type="button"
-                    data-bs-target={`#${carouselId}`}
-                    data-bs-slide-to={i}
-                    className={i === 0 ? "active" : ""}
-                    aria-current={i === 0 ? "true" : undefined}
-                    aria-label={`Slide ${i + 1}`}
-                  />
-                ))}
+                
            
 
               {/* slides */}
