@@ -23,13 +23,13 @@ const toAbs = (u) => {
   return u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`;
 };
 
-const CITY_DISTRICTS = {
-  Erbil: ["Soran", "Shaqlawa", "Mergasor", "Koya"],
-  Sulaimani: ["Chamchamal", "Tasluja", "Penjwen", "Qaladze"],
-  Duhok: ["Akre", "Zakho", "Amadiya", "Simele"],
-  Halabja: ["Byara", "Tawella"],
-  Kirkuk: ["Daquq", "Tuz Khurmatu"],
-};
+
+ const CITY_DISTRICTS = {
+    Erbil: ["Hawler", "Soran", "Shaqlawa", "Mergasor", "Choman", "Koye", "Rwanduz", "Dashti Hawler"],
+    Sulaimani: ["Slemani", "Bazyan", "Penjwen", "Qaradax", "Sharbazher", "Dukan", "Ranya", "Pashadar", "Penjwin", "Chemchemal"],
+    Duhok: ["Duhok", "Akre", "Zakho", "Amadiya", "Simele", "Bardarash", "Shekhan"],
+    Halabja: ["Halbja", "Khurmal", "Byara", "Tawella"],
+  };
 
 export default function AcceptedPosts() {
   const [all, setAll] = useState([]);
