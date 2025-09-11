@@ -24,7 +24,7 @@ export default function App() {
       <Route path="/city-categories" element={<CityCategories />} />
       <Route path="/user-post" element={<UserPost />} />
       <Route path="/submitted-posts" element={<SubmittedPosts />} />
-      <Route path="/403" element={<Forbidden />} />
+  
 
       {/* Auth (login page itself is public) */}
       <Route path="/admin/login" element={<AdminLogin />} />
