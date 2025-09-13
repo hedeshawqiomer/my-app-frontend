@@ -91,7 +91,7 @@ export default function AcceptedPosts() {
         ) : (
           <div className="row g-3">
             {data.map((p) => (
-              <div className="col-12 col-md-6 col-lg-4" key={p.id}>
+              <div className="col-12 col-md-6 col-lg-4 pt-4" key={p.id}>
                 <PostCard
                   post={p}
                   toAbs={toAbs}
