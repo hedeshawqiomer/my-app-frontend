@@ -83,8 +83,8 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="d-flex flex-column min-vh-100 m-4">
-      <main className="form-signin w-100 m-auto py-4" style={{ maxWidth: 400 }}>
+    <div className="d-flex flex-column min-vh-100  me-4 ms-4">
+      <main className="form-signin w-100 m-auto " style={{ maxWidth: 400 }}>
         <form onSubmit={onSubmit} noValidate>
           <h1 className="h3 mb-3 fw-bold d-flex align-items-center">Admin Portal</h1>
           <p className="text-muted mb-4">Administrator Login</p>
@@ -119,11 +119,11 @@ export default function AdminLogin() {
             <label className="form-check-label" htmlFor="checkDefault">Remember me</label>
           </div>
 
-          <button className="btn btn-primary w-100 py-2" type="submit" disabled={submitting}>
+          <button className="btn btn-primary w-100 pt-2" type="submit" disabled={submitting}>
             {submitting ? "Signing in…" : "Sign in"}
           </button>
 
-          <p className="mt-5 mb-3 text-body-secondary text-center">© 2025 EKurdistan</p>
+          <p className="mt-3  text-body-secondary text-center">© 2025 EKurdistan</p>
         </form>
       </main>
       <BackendFooter />
