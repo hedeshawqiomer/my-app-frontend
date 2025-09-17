@@ -62,7 +62,7 @@ function Pendingposts() {
 
   return (
     <>
-      <div className="container-fluid mt-1 pt-2">
+      <div className="container-fluid mt-5 pt-5">
         <DashboardHeader showCityFilter onCityChange={setCityFilter} />
       </div>
 

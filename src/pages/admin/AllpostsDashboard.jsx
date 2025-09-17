@@ -80,7 +80,7 @@ export default function AcceptedPosts() {
 
   return (
     <>
-      <div className="container-fluid mt-1 pt-2">
+      <div className="container-fluid mt-5 pt-5">
         <BackendHeader showCityFilter onCityChange={setCity} />
 
         {loading && <div className="alert alert-info">Loading…</div>}
