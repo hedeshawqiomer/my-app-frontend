@@ -7,18 +7,20 @@ import { getDistanceFromLatLonInKm } from "../../../utills/Geolocation";
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 
-// Allow only http/https image URLs
+/* ---------- helpers ---------- */
+
+// only allow http/https images
 function safeHttpUrl(u) {
   if (!u || typeof u !== "string") return "";
   try {
     const url = new URL(u, window.location.origin);
-    return (url.protocol === "http:" || url.protocol === "https:") ? url.href : "";
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
   } catch {
     return "";
   }
 }
 
-// Helpers: parse "lat,lng" OR treat as a free-text address
+// parse "lat,lng" -> {lat, lng}
 function parseLatLng(input) {
   if (!input || typeof input !== "string") return null;
   const m = input.trim().match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
@@ -30,29 +32,47 @@ function parseLatLng(input) {
   return { lat, lng };
 }
 
-function buildDirectionsUrl(userLoc, destStr) {
-  const destLatLng = parseLatLng(destStr);
+// strict city-center lookup by post.city (case-insensitive fallback)
+function getCityCenterFor(post) {
+  const name = String(post?.city ?? "").trim();
+  if (cityCenters[name]) return cityCenters[name];
+  const foundKey = Object.keys(cityCenters).find(
+    (k) => k.toLowerCase() === name.toLowerCase()
+  );
+  return foundKey ? cityCenters[foundKey] : null;
+}
+
+// choose origin: user first, else city center (or null if unknown)
+function chooseOrigin(userLoc, post) {
+  return userLoc ?? getCityCenterFor(post) ?? null;
+}
+
+// build Google Maps directions forcing the chosen origin if available
+function buildDirectionsUrl(originLL, destStr) {
+  const destLL = parseLatLng(destStr);
   const base = "https://www.google.com/maps/dir/?api=1";
   const travel = "travelmode=driving";
 
-  const destinationParam = destLatLng
-    ? `destination=${destLatLng.lat},${destLatLng.lng}`
+  const originParam = originLL ? `origin=${originLL.lat},${originLL.lng}` : null;
+  const destinationParam = destLL
+    ? `destination=${destLL.lat},${destLL.lng}`
     : `destination=${encodeURIComponent(destStr || "")}`;
 
-  const originParam = userLoc ? `origin=${userLoc.lat},${userLoc.lng}` : null;
-
+  // if no origin (unknown city), omit origin → Google will use “Your location”
   return [base, originParam, destinationParam, travel].filter(Boolean).join("&");
 }
 
-function Recentcard() {
+/* ---------- component ---------- */
+
+export default function Recentcard() {
   const [userLocation, setUserLocation] = useState(null);
   const [recentPosts, setRecentPosts] = useState([]);
 
-  // Load from backend instead of localStorage
+  // Load posts (accepted/public) from backend
   useEffect(() => {
     (async () => {
       try {
-        const data = await listPublicPosts(); // accepted/public posts
+        const data = await listPublicPosts();
         const normalized = (data || []).map((p) => ({
           ...p,
           images: (p.images || []).map((img) =>
@@ -76,20 +96,16 @@ function Recentcard() {
     })();
   }, []);
 
-  // Get user's current location
+  // Try to get user location (non-blocking)
   useEffect(() => {
     if (!("geolocation" in navigator)) return;
     let cancelled = false;
 
     const options = { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 };
-
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      (pos) => {
         if (cancelled) return;
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       },
       (err) => {
         if (cancelled) return;
@@ -104,7 +120,7 @@ function Recentcard() {
     };
   }, []);
 
-  // Reveal cards on view
+  // Reveal cards animation
   useEffect(() => {
     const cards = document.querySelectorAll(".custom-card");
     if (!cards.length) return;
@@ -144,21 +160,31 @@ function Recentcard() {
           </h1>
 
           {recentPosts.map((post, index) => {
-            const postLL = parseLatLng(post.location);           // required per your rule
-            const center = cityCenters[post.city];               // fallback origin
-
-            let distanceText = "—";
-            if (postLL) {
-              const origin = userLocation ?? center;             // user→post OR center→post
-              if (origin) {
-                const km = getDistanceFromLatLonInKm(
-                  origin.lat, origin.lng, postLL.lat, postLL.lng
-                );
-                distanceText = `${km.toFixed(2)} km`;
-              }
-            }
-
+            const postLL = parseLatLng(post.location);      // post must store "lat,lng"
+            const originLL = chooseOrigin(userLocation, post);
             const keyId = post.id ?? index;
+
+            // Label: shows whether we used user location or city center
+            const originIsUser = !!userLocation;
+            const distanceLabel = originIsUser
+              ? "Your distance"
+              : "City center distance";
+
+            // Compute distance only if we have both ends
+            let distanceText = "—";
+            if (postLL && originLL) {
+              const km = getDistanceFromLatLonInKm(
+                originLL.lat,
+                originLL.lng,
+                postLL.lat,
+                postLL.lng
+              );
+              distanceText = `${km.toFixed(2)} km`;
+            } else if (!postLL) {
+              distanceText = "No location";
+            } else if (!originLL) {
+              distanceText = "City center unknown";
+            }
 
             return (
               <div className="col-lg-4 col-md-6" key={keyId}>
@@ -174,30 +200,35 @@ function Recentcard() {
                     data-bs-toggle="modal"
                     data-bs-target={`#carouselModal${keyId}`}
                   />
+
                   <div className="card-body px-4 py-3 text-start">
                     <h5 className="card-title fs-4 fw-bold mb-2">
                       City: {post.city}
                     </h5>
+
                     <p className="card-text text-muted mb-1">
                       <strong>District:</strong> {post.district}
                     </p>
+
                     <p className="card-text text-muted mb-1">
-                      <strong>Distance:</strong> {distanceText}
+                      <strong>{distanceLabel}:</strong> {distanceText}
                     </p>
+
                     <p className="card-text text-muted">
-                      <strong>Uploaded by: </strong>
-                      {post.name}
+                      <strong>Uploaded by:</strong> {post.name}
                     </p>
+
                     <a
-                      href={buildDirectionsUrl(userLocation, post.location)}
+                      href={buildDirectionsUrl(originLL, post.location)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-success w-100"
-                      title="Open Google Maps directions from your location"
+                      title="Open Google Maps directions"
                     >
                       🧭 Directions in Google Maps
                     </a>
                   </div>
+
                   <div className="card-footer d-flex justify-content-between align-items-center py-2 px-4">
                     <small className="text-body-secondary">
                       {post.createdAt
@@ -225,6 +256,7 @@ function Recentcard() {
                           aria-label="Close"
                         ></button>
                       </div>
+
                       <div className="modal-body">
                         <div
                           id={`carouselIndicators${keyId}`}
@@ -261,27 +293,23 @@ function Recentcard() {
                               ))
                             )}
                           </div>
+
                           <button
                             className="carousel-control-prev"
                             type="button"
                             data-bs-target={`#carouselIndicators${keyId}`}
                             data-bs-slide="prev"
                           >
-                            <span
-                              className="carousel-control-prev-icon"
-                              aria-hidden="true"
-                            />
+                            <span className="carousel-control-prev-icon" aria-hidden="true" />
                           </button>
+
                           <button
                             className="carousel-control-next"
                             type="button"
                             data-bs-target={`#carouselIndicators${keyId}`}
                             data-bs-slide="next"
                           >
-                            <span
-                              className="carousel-control-next-icon"
-                              aria-hidden="true"
-                            />
+                            <span className="carousel-control-next-icon" aria-hidden="true" />
                           </button>
                         </div>
                       </div>
@@ -297,5 +325,3 @@ function Recentcard() {
     </section>
   );
 }
-
-export default Recentcard;
