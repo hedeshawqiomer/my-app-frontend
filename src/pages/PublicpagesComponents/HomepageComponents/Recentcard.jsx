@@ -167,8 +167,8 @@ export default function Recentcard() {
             // Label: shows whether we used user location or city center
             const originIsUser = !!userLocation;
             const distanceLabel = originIsUser
-              ? "Your distance"
-              : "City center distance";
+              ? "Your Distance"
+              : "City center Distance";
 
             // Compute distance only if we have both ends
             let distanceText = "—";
