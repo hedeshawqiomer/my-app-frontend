@@ -9,7 +9,7 @@ function BackendFooter() {
           href="mailto:realhede7@gmail.com"
           className="text-primary text-decoration-none"
         >
-          Muhammed Ali
+          Hedi Shawqi
         </a>
       </p>
     </footer>
