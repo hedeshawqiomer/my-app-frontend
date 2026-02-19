@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import BackendFooter from "./DashboardComponents/BackendFooter";
+import Footer from "../PublicpagesComponents/Footer";
 import { useAuth } from "../../context/AuthContext";
 import { sanitizeNextPath } from "../../utills/nav";
 
@@ -127,10 +127,10 @@ export default function AdminLogin() {
             {submitting ? t('admin.login.signingIn') : t('admin.login.signIn')}
           </button>
 
-          <p className="mt-3  text-body-secondary text-center">{t('footer.copyright')}</p>
+
         </form>
       </main>
-      <BackendFooter />
+      <Footer simple />
     </div>
   );
 }

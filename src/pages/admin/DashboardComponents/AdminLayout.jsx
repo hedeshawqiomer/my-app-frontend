@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../../PublicpagesComponents/Navbar";
-import BackendFooter from "./BackendFooter.jsx";
+import Footer from "../../PublicpagesComponents/Footer";
 
 export default function AdminLayout() {
   return (
@@ -11,7 +11,7 @@ export default function AdminLayout() {
       <div className="container-fluid px-3 px-md-4 flex-grow-1">
         <Outlet />
       </div>
-      <BackendFooter />
+      <Footer simple />
     </div>
   );
 }

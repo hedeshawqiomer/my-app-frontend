@@ -1,21 +1,23 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-function Footer() {
+function Footer({ simple = false }) {
   const { t } = useTranslation();
   return (
     <footer className="py-3 ">
-      <ul className="nav justify-content-center border-bottom pb-3 mb-3">
-        <li className="nav-item">
-          <a href="/" className="nn nav-link px-2 text-body-secondary">{t('footer.home')}</a>
-        </li>
-        <li className="nav-item">
-          <a href="/city-categories" className="nn nav-link px-2 text-body-secondary">{t('footer.explore')}</a>
-        </li>
-        <li className="nav-item">
-          <a href="/user-post" className="nn nav-link px-2 text-body-secondary">{t('footer.share')}</a>
-        </li>
-      </ul>
+      {!simple && (
+        <ul className="nav justify-content-center border-bottom pb-3 mb-3">
+          <li className="nav-item">
+            <a href="/" className="nn nav-link px-2 text-body-secondary">{t('footer.home')}</a>
+          </li>
+          <li className="nav-item">
+            <a href="/city-categories" className="nn nav-link px-2 text-body-secondary">{t('footer.explore')}</a>
+          </li>
+          <li className="nav-item">
+            <a href="/user-post" className="nn nav-link px-2 text-body-secondary">{t('footer.share')}</a>
+          </li>
+        </ul>
+      )}
 
       <p className="text-center text-body-secondary text-bold mb-0">
         {t('footer.copyright')}

@@ -37,6 +37,12 @@ html[lang="ku"] .navbar-toggler {
   margin-right: auto !important;
 }
 
+/* Fix Navbar Links alignment in RTL (assuming standard LTR Bootstrap) */
+html[lang="ku"] .navbar-nav.ms-auto {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
 body { margin: 0; padding: 0; }
 footer { margin-bottom: 0; }
 
