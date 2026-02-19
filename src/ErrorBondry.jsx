@@ -10,7 +10,7 @@ export default class ErrorBoundary extends React.Component {
   }
   render() {
     if (this.state.hasError)
-      return <div className="text-center py-5">Something went wrong</div>;
+      return <div className="text-center py-5">Something went wrong.</div>;
     return this.props.children;
   }
 }
