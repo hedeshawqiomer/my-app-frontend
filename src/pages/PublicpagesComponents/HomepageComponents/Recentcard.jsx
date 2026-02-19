@@ -1,5 +1,6 @@
 // src/components/PublicpagesComponents/HomepageComponents/Recentcard.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   safeHttpUrl,
   parseLatLng,
@@ -14,9 +15,20 @@ const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 
 /* ---------- component ---------- */
 
+  /* ---------- component ---------- */
+
 export default function Recentcard() {
+  const { t, i18n } = useTranslation();
   const [userLocation, setUserLocation] = useState(null);
   const [recentPosts, setRecentPosts] = useState([]);
+
+  // Helper to format numbers based on language
+  const formatNumber = (num) => {
+    if (i18n.language === 'ku') {
+      return new Intl.NumberFormat('ar-IQ').format(num); // Use Arabic/Kurdish numerals
+    }
+    return num.toFixed(2);
+  };
 
   // Load posts (accepted/public) from backend
   useEffect(() => {
@@ -96,7 +108,7 @@ export default function Recentcard() {
       <div className="container">
         <div className="row g-4">
           <h1 className="display-4 fw-bold text-body-emphasis mt-1 mb-4 fs-1 text-gradient-gold">
-            Top Rated Resorts
+            {t('home.topRated')}
           </h1>
 
           {recentPosts.map((post, index) => {
@@ -107,8 +119,8 @@ export default function Recentcard() {
             // Label: shows whether we used user location or city center
             const originIsUser = !!userLocation;
             const distanceLabel = originIsUser
-              ? "Your Distance"
-              : "City center Distance";
+              ? t("explore.card.distance.your")
+              : t("explore.card.distance.cityCenter");
 
             // Compute distance only if we have both ends
             let distanceText = "—";
@@ -119,16 +131,19 @@ export default function Recentcard() {
                 postLL.lat,
                 postLL.lng
               );
-              distanceText = `${km.toFixed(2)} km`;
+              distanceText = `${formatNumber(km)} ${t("explore.card.distance.km")}`;
             } else if (!postLL) {
-              distanceText = "No location";
+              distanceText = t("explore.card.distance.noLocation");
             } else if (!originLL) {
-              distanceText = "City center unknown";
+              distanceText = t("explore.card.distance.unknownCenter");
             }
 
             return (
               <div className="col-lg-4 col-md-6" key={keyId}>
-                <div className="card custom-card fade-in-strong">
+                <div
+                  className="card custom-card fade-in-strong"
+                  style={{ textAlign: i18n.language === "ku" ? "right" : "left" }}
+                >
                   <img
                     src={post.images?.[0] || ""}
                     className="card-img-top custom-img"
@@ -141,38 +156,58 @@ export default function Recentcard() {
                     data-bs-target={`#carouselModal${keyId}`}
                   />
 
-                  <div className="card-body px-4 py-3 text-start">
-                    <h5 className="card-title fs-4 fw-bold mb-2">
-                      City: {post.city}
-                    </h5>
+                  <div className="card-body px-4 py-3">
+                    <div className="d-flex align-items-baseline gap-2 mb-2">
+                       <h5 className="card-title fs-4 fw-bold text-success m-0">
+                         {t("explore.card.city")}:
+                       </h5>
+                       <span className="fs-5 fw-bold text-body">
+                         {t(post.city, { defaultValue: post.city })}
+                       </span>
+                    </div>
 
-                    <p className="card-text text-muted mb-1">
-                      <strong>District:</strong> {post.district}
-                    </p>
+                    <div className="d-flex align-items-baseline gap-2 mb-3">
+                      <strong className="text-body-secondary">
+                        {t("explore.card.district")}:
+                      </strong>
+                      <span className="text-muted">
+                        {t(post.district, { defaultValue: post.district })}
+                      </span>
+                    </div>
 
-                    <p className="card-text text-muted mb-1">
-                      <strong>{distanceLabel}:</strong> {distanceText}
-                    </p>
+                    <div className="d-flex align-items-baseline gap-2 mb-2">
+                      <strong className="text-body-secondary">
+                        {distanceLabel}:
+                      </strong>
+                      <span className="text-muted">
+                       {distanceText}
+                      </span>
+                    </div>
 
-                    <p className="card-text text-muted">
-                      <strong>Uploaded by:</strong> {post.name}
-                    </p>
-
+                    <div className="d-flex align-items-baseline gap-2 mb-4">
+                      <strong className="text-body-secondary">
+                        {t("explore.card.uploadedBy")}:
+                      </strong>
+                      <span className="text-muted">
+                        {post.uploaderName || post.name || "Unknown"}
+                      </span>
+                    </div>
+                    
                     <a
                       href={buildDirectionsUrl(originLL, post.location)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-success w-100"
-                      title="Open Google Maps directions"
+                      title={t("explore.card.directions")}
                     >
-                      🧭 Directions in Google Maps
+                      {t("explore.card.directions")}
                     </a>
                   </div>
 
                   <div className="card-footer d-flex justify-content-between align-items-center py-2 px-4">
                     <small className="text-body-secondary">
                       {post.createdAt
-                        ? new Date(post.createdAt).toLocaleDateString()
+                        ? new Date(post.createdAt).toLocaleDateString(i18n.language === 'ku' ? 'ar-IQ' : 'en-US')
                         : "—"}
                     </small>
                   </div>

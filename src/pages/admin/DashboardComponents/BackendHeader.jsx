@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function BackendHeader({  showCityFilter = false, onCityChange }) {
+  const { t } = useTranslation();
   return (
     <div className=" pt-1 pb-1 ">
   
@@ -14,11 +16,10 @@ export default function BackendHeader({  showCityFilter = false, onCityChange })
               id="cityFilter"
               onChange={(e) => onCityChange?.(e.target.value)}
             >
-              <option value="">Default</option>
-              <option value="Erbil">Erbil</option>
-              <option value="Sulaimani">Sulaimani</option>
-              <option value="Duhok">Duhok</option>
-              <option value="Halabja">Halabja</option>
+              <option value="">{t('admin.filter.default')}</option>
+              {['Erbil', 'Sulaimani', 'Duhok', 'Halabja'].map(city => (
+                <option key={city} value={city}>{t(`offcanvas.categories.${city}`)}</option>
+              ))}
             </select>
           </div>
         </div>

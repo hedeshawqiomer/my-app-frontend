@@ -1,5 +1,6 @@
 // src/components/PublicpagesComponents/ExplorepageComponents/CitySection.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CardCoursel from "./CardCoursel";
 import cityCenters from "../../../utills/CityCenter";
 import { getDistanceFromLatLonInKm } from "../../../utills/Geolocation";
@@ -34,6 +35,7 @@ function buildDirectionsUrl(userLoc, cityCenter, destStr, travelMode = "driving"
 }
 
 export default function CitySection({ city, posts }) {
+  const { t } = useTranslation();
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
@@ -61,18 +63,18 @@ export default function CitySection({ city, posts }) {
           color: "transparent",
         }}
       >
-        {`Welcome to ${city}`}
+        {t("explore.welcome", { city: t(`offcanvas.categories.${city}`) })}
       </h3>
 
       <p className="section-description">
-        {posts.length ? null : "No approved posts yet for this city."}
+        {posts.length ? null : t("explore.noPosts")}
       </p>
 
       <div className="cards-wrapper">
         {posts.map((post) => {
           const postLL = parseLatLng(post.location);
           let distanceText = "—";
-          let distanceLabel = userLocation ? "Your Distance" : "City Center Distance";
+          let distanceLabel = userLocation ? t("explore.distance.your") : t("explore.distance.center");
 
           if (postLL) {
             const origin = userLocation ?? center;
@@ -99,16 +101,16 @@ export default function CitySection({ city, posts }) {
                   data-bs-target={`#modal-${post.id}`} // matches CardCoursel modal id
                 />
                 <div className="card-body">
-                  <h5 className="card-title text-success fw-bold">City: {post.city}</h5>
+                  <h5 className="card-title text-success fw-bold">{t("explore.card.city")}: {post.city}</h5>
                   <p className="card-text text-muted mb-1">
-                    <strong>District:</strong> {post.district}
+                    <strong>{t("explore.card.district")}:</strong> {post.district}
                   </p>
                   {/* 👇 dynamic label */}
                   <p className="card-text text-muted mb-1">
                     <strong>{distanceLabel}:</strong> {distanceText}
                   </p>
                   <p className="card-text text-muted mb-1">
-                    <strong>Uploaded by:</strong> {post.name}
+                    <strong>{t("explore.card.uploadedBy")}:</strong> {post.name}
                   </p>
 
                   <a
@@ -118,11 +120,11 @@ export default function CitySection({ city, posts }) {
                     className="btn btn-success w-100 mb-3"
                     title={
                       userLocation
-                        ? "Open Google Maps directions from your location"
-                        : `Open Google Maps directions from ${city} center`
+                        ? t("explore.card.directionsTitle.user")
+                        : t("explore.card.directionsTitle.center", { city })
                     }
                   >
-                    🧭 Directions in Google Maps
+                    {t("explore.card.directions")}
                   </a>
 
                   <small className="text-muted">

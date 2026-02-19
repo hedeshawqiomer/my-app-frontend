@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function MoreAbout() {
+  const { t } = useTranslation();
   return (
     <section className="secondsec2" id="heroSection">
       <div className="container">
@@ -16,16 +18,11 @@ function MoreAbout() {
 
           <div className="col-lg-6">
             <h1 className="display-5 fw-bold lh-1 mb-4 fade-down text-gradient-gold">
-              Discover the Perfect Spot for Your Next Vacation
+              {t('home.subtitle')}
             </h1>
 
             <p className="lead fw-bold fade-down">
-              Planning a picnic starts with finding the right location a place
-              that combines natural beauty, comfort, and accessibility. Ideal
-              picnic spots often include parks, riverbanks, lakesides, or quiet
-              hills with scenic views. When searching for the perfect place, you
-              can also check online maps, reviews, and local recommendations to
-              discover hidden gems
+              {t('home.description')}
             </p>
           </div>
         </div>

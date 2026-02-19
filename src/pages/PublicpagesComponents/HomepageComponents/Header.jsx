@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function Header(){
+  const { t } = useTranslation();
       return(
             
               <header className="masthead">
@@ -13,13 +15,13 @@ function Header(){
             fontWeight: "84px"
           }}
         >
-          Identify and Share Attractive Resorts Destination With EKurdistan.
+          {t('home.title')}
         </h1>
         <hr className="divider" />
       </div>
       <div className="col-lg-8 align-self-baseline">
         <a className="btn-dark " href="#heroSection">
-          Find Out More
+          {t('home.findMore')}
         </a>
       </div>
     </div>

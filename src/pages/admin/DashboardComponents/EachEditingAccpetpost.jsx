@@ -1,17 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function EditPostModal({
   open,
   post,
   onClose,
   onSave,                 // (patch, { removeImageUrls, removeImageIds })
-  CITY_DISTRICTS,
+  CITY_DISTRICTS = {},
   imageUrlFor,           // optional normalizer
 }) {
+  console.log("EditPostModal rendering", { open, postFn: !!post, cityDistrictsKeys: Object.keys(CITY_DISTRICTS) });
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     name: "", email: "", location: "", city: "", district: "",
   });
 
+  // ... (keep state logic same)
   const originalImages = useMemo(
     () => (Array.isArray(post?.images) ? post.images : []),
     [post]
@@ -34,16 +38,16 @@ export default function EditPostModal({
     setLocating(false);
   }, [post]);
 
-  const urlOf = (img) =>
-    imageUrlFor
-      ? imageUrlFor(img)
-      : (() => {
-          const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
-          const u = typeof img === "string" ? img : (img?.url ?? img?.path ?? "");
-          if (!u) return "";
-          if (/^https?:\/\//i.test(u)) return u;
-          return u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`;
-        })();
+  const urlOf = (img) => {
+    const u = typeof img === "string" ? img : (img?.url ?? img?.path ?? "");
+    if (imageUrlFor) return imageUrlFor(u);
+
+    // Fallback if no normalizer provided
+    const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
+    if (!u) return "";
+    if (/^https?:\/\//i.test(u)) return u;
+    return u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`;
+  };
 
   const toggleRemove = (idx) =>
     setRemoved((prev) => {
@@ -62,7 +66,7 @@ export default function EditPostModal({
 
   const getLocation = () => {
     if (!navigator.geolocation) {
-      setLocErr("Geolocation not supported in this browser.");
+      setLocErr(t("share.warnings.geolocationUnsupported"));
       return;
     }
     setLocErr("");
@@ -75,7 +79,7 @@ export default function EditPostModal({
         setLocating(false);
       },
       (err) => {
-        setLocErr(err?.message || "Failed to get location.");
+        setLocErr(err?.message || t("share.warnings.geolocationError"));
         setLocating(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
@@ -108,7 +112,12 @@ export default function EditPostModal({
       })
       .filter(Boolean);
 
-    await onSave(patch, { removeImageUrls, removeImageIds });
+    try {
+      await onSave(patch, { removeImageUrls, removeImageIds });
+    } catch (err) {
+      console.error("Failed to save post:", err);
+      alert("Failed to save: " + (err.message || "Unknown error"));
+    }
   };
 
   return (
@@ -128,17 +137,17 @@ export default function EditPostModal({
         <div className="modal-content">
           <form onSubmit={submit}>
             <div className="modal-header">
-              <h5 className="modal-title">Edit Post</h5>
+              <h5 className="modal-title">{t("admin.editModal.title")}</h5>
               <button type="button" className="btn-close" onClick={onClose} />
             </div>
 
             <div className="modal-body">
               {!post ? (
-                <div className="text-muted small">No post selected.</div>
+                <div className="text-muted small">{t("admin.editModal.noPost")}</div>
               ) : (
                 <div className="row g-3">
                   <div className="col-12 col-md-6">
-                    <label className="form-label">Your Name</label>
+                    <label className="form-label">{t("admin.editModal.name")}</label>
                     <input
                       className="form-control"
                       value={form.name}
@@ -147,7 +156,7 @@ export default function EditPostModal({
                   </div>
 
                   <div className="col-12 col-md-6">
-                    <label className="form-label">Your Email (Optional)</label>
+                    <label className="form-label">{t("admin.editModal.email")}</label>
                     <input
                       type="email"
                       className="form-control"
@@ -157,7 +166,7 @@ export default function EditPostModal({
                   </div>
 
                   <div className="col-12">
-                    <label className="form-label">Your Current Location (lat,lng)</label>
+                    <label className="form-label">{t("admin.editModal.location")}</label>
                     <div className="input-group">
                       <input
                         className="form-control"
@@ -170,55 +179,55 @@ export default function EditPostModal({
                         type="button"
                         onClick={getLocation}
                         disabled={locating}
-                        title="Use current GPS location"
+                        title={t("admin.editModal.useGPS")}
                       >
-                        {locating ? "Locating…" : "Get Location"}
+                        {locating ? t("admin.editModal.locating") : t("admin.editModal.getLocation")}
                       </button>
                     </div>
                     {locErr && <div className="text-danger small mt-1">{locErr}</div>}
                   </div>
 
                   <div className="col-12 col-md-6">
-                    <label className="form-label">City</label>
+                    <label className="form-label">{t("admin.editModal.city")}</label>
                     <select
                       className="form-select"
                       value={form.city}
                       onChange={(e) => handleCity(e.target.value)}
                     >
-                      <option value="">Choose city…</option>
+                      <option value="">{t("admin.editModal.chooseCity")}</option>
                       {Object.keys(CITY_DISTRICTS).map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                        <option key={c} value={c}>{t(`offcanvas.categories.${c}`)}</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="col-12 col-md-6">
-                    <label className="form-label">District</label>
+                    <label className="form-label">{t("admin.editModal.district")}</label>
                     <select
                       className="form-select"
                       value={form.district}
                       onChange={(e) => setForm((s) => ({ ...s, district: e.target.value }))}
                       disabled={!form.city}
                     >
-                      <option value="">Choose district…</option>
+                      <option value="">{t("admin.editModal.chooseDistrict")}</option>
                       {(CITY_DISTRICTS[form.city] || []).map((d) => (
-                        <option key={d} value={d}>{d}</option>
+                        <option key={d} value={d}>{t(`districts.${d}`, { defaultValue: d })}</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="col-12">
                     <label className="form-label d-flex justify-content-between align-items-center">
-                      <span>Images</span>
+                      <span>{t("admin.editModal.images")}</span>
                       {[...removed].length > 0 && (
                         <button type="button" className="btn btn-link p-0 small" onClick={clearRemovals}>
-                          Undo all removals ({[...removed].length})
+                          {t("admin.editModal.undo")} ({[...removed].length})
                         </button>
                       )}
                     </label>
 
                     {originalImages.length === 0 ? (
-                      <div className="text-muted small">No images attached.</div>
+                      <div className="text-muted small">{t("admin.editModal.noImages")}</div>
                     ) : (
                       <div className="d-flex align-items-center gap-2 flex-wrap" style={{ rowGap: 8 }}>
                         {originalImages.map((img, i) => {
@@ -259,8 +268,8 @@ export default function EditPostModal({
             </div>
 
             <div className="modal-footer">
-              <button type="button" className="btn btn-light" onClick={onClose}>Cancel</button>
-              <button type="submit" className="btn btn-primary" disabled={!post}>Save changes</button>
+              <button type="button" className="btn btn-light" onClick={onClose}>{t("admin.editModal.cancel")}</button>
+              <button type="submit" className="btn btn-primary" disabled={!post}>{t("admin.editModal.save")}</button>
             </div>
           </form>
         </div>

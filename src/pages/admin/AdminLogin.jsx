@@ -1,5 +1,6 @@
 // src/pages/admin/AdminLogin.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import BackendFooter from "./DashboardComponents/BackendFooter";
 import { useAuth } from "../../context/AuthContext";
@@ -9,6 +10,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, booted, login } = useAuth();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -77,7 +79,7 @@ export default function AdminLogin() {
   if (!booted) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "40vh" }}>
-        <div className="text-muted">Loading…</div>
+        <div className="text-muted">{t('admin.login.loading')}</div>
       </div>
     );
   }
@@ -86,10 +88,12 @@ export default function AdminLogin() {
     <div className="d-flex flex-column min-vh-100  me-4 ms-4">
       <main className="form-signin w-100 m-auto " style={{ maxWidth: 400 }}>
         <form onSubmit={onSubmit} noValidate>
-          <h1 className="h3 mb-3 fw-bold d-flex align-items-center">Admin Portal</h1>
-          <p className="text-muted mb-4">Administrator Login</p>
+          <h1 className="h3 mb-3 fw-bold d-flex align-items-center">{t('admin.login.portalTitle')}</h1>
+          <p className="text-muted mb-4">{t('admin.login.portalSubtitle')}</p>
 
-          {err && <div className="alert alert-danger py-2" role="alert">{err}</div>}
+          {err && <div className="alert alert-danger py-2" role="alert">
+            {err === "Invalid credentials" ? t('admin.login.invalid') : err}
+          </div>}
 
           <div className="form-floating mb-3">
             <input
@@ -98,7 +102,7 @@ export default function AdminLogin() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username" required
             />
-            <label htmlFor="floatingInput">Email address</label>
+            <label htmlFor="floatingInput">{t('admin.login.emailLabel')}</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -108,7 +112,7 @@ export default function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password" required
             />
-            <label htmlFor="floatingPassword">Password</label>
+            <label htmlFor="floatingPassword">{t('admin.login.passwordLabel')}</label>
           </div>
 
           <div className="form-check text-start my-3">
@@ -116,14 +120,14 @@ export default function AdminLogin() {
               className="form-check-input" type="checkbox" id="checkDefault"
               checked={remember} onChange={(e) => setRemember(e.target.checked)}
             />
-            <label className="form-check-label" htmlFor="checkDefault">Remember me</label>
+            <label className="form-check-label" htmlFor="checkDefault">{t('admin.login.rememberMe')}</label>
           </div>
 
           <button className="btn btn-primary w-100 pt-2" type="submit" disabled={submitting}>
-            {submitting ? "Signing in…" : "Sign in"}
+            {submitting ? t('admin.login.signingIn') : t('admin.login.signIn')}
           </button>
 
-          <p className="mt-3  text-body-secondary text-center">© 2025 EKurdistan</p>
+          <p className="mt-3  text-body-secondary text-center">{t('footer.copyright')}</p>
         </form>
       </main>
       <BackendFooter />

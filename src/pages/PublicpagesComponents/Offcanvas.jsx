@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 // Optional ESM fallback if you ever switch from bundle to module:
 // import { Offcanvas } from "bootstrap";
 
 function Offcanvas() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const goCity = (city) => (e) => {
@@ -36,7 +38,7 @@ function Offcanvas() {
     >
       <div className="offcanvas-header">
         <h5 id="offcanvasRightLabel" className="mb-0">
-          City Category
+          {t("offcanvas.title")}
         </h5>
         <button
           type="button"
@@ -54,7 +56,7 @@ function Offcanvas() {
             onClick={goCity("Erbil")}
             data-bs-dismiss="offcanvas"
           >
-            Erbil
+            {t("offcanvas.categories.Erbil")}
           </a>
 
           <a
@@ -63,7 +65,7 @@ function Offcanvas() {
             onClick={goCity("Sulaimani")}
             data-bs-dismiss="offcanvas"
           >
-            Sulaimani
+            {t("offcanvas.categories.Sulaimani")}
           </a>
 
           <a
@@ -72,7 +74,7 @@ function Offcanvas() {
             onClick={goCity("Duhok")}
             data-bs-dismiss="offcanvas"
           >
-            Duhok
+            {t("offcanvas.categories.Duhok")}
           </a>
 
           <a
@@ -81,7 +83,7 @@ function Offcanvas() {
             onClick={goCity("Halabja")}
             data-bs-dismiss="offcanvas"
           >
-            Halabja
+            {t("offcanvas.categories.Halabja")}
           </a>
         </div>
       </div>

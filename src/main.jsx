@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import ErrorBoundary from './ErrorBondry.jsx';
 
 import { HelmetProvider } from 'react-helmet-async';
+import './i18n'; // Initialize i18n
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

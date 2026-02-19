@@ -1,9 +1,12 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function LocationForm({ location, setLocation }) {
+  const { t } = useTranslation();
+
   const getLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
+      alert(t("share.warnings.geolocationUnsupported"));
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -15,7 +18,7 @@ setLocation(`${lat},${lon}`);
 
       },
       (error) => {
-        alert("Unable to retrieve your location.");
+        alert(t("share.warnings.geolocationError"));
         console.error(error);
       }
     );
@@ -23,7 +26,7 @@ setLocation(`${lat},${lon}`);
 
   return (
     <div className="mb-3">
-      <label htmlFor="location" className="form-label">Your Current Location</label>
+      <label htmlFor="location" className="form-label">{t("share.form.location")}</label>
       <div className="input-group">
         <input
           type="text"
@@ -37,7 +40,7 @@ setLocation(`${lat},${lon}`);
           className="btn btn-outline-success"
           onClick={getLocation}
         >
-          Get Location
+          {t("share.form.getLocationBtn")}
         </button>
       </div>
     </div>

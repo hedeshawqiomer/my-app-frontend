@@ -1,0 +1,192 @@
+{
+  "navbar": {
+    "brand": "EKurdistan",
+    "about": "About",
+    "explore": "Explore",
+    "share": "Share Destination",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "login": "Admin Login",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Identify and Share Attractive Resorts Destination With EKurdistan.",
+    "subtitle": "Discover the Perfect Spot for Your Next Vacation",
+    "findMore": "Find Out More",
+    "description": "Planning a picnic starts with finding the right location a place that combines natural beauty, comfort, and accessibility. Ideal picnic spots often include parks, riverbanks, lakesides, or quiet hills with scenic views. When searching for the perfect place, you can also check online maps, reviews, and local recommendations to discover hidden gems",
+    "topRated": "Top Rated Resorts",
+    "viewDetails": "View Details"
+  },
+  "share": {
+    "title": "Share a Destination",
+    "whyShareTitle": "Why Share?",
+    "whyShareText": "Sharing your destination helps other explorers learn more about Kurdistan's hidden gems.",
+    "whyShareList": {
+      "1": "Help promote tourism in your city.",
+      "2": "Highlight unique places.",
+      "3": "Contribute to a community-driven guide."
+    },
+    "whyShareFooter": "We only require basic info. Images and location help others discover better!",
+    "form": {
+      "name": "Your Name",
+      "namePlaceholder": "eg: Ahmed Muhammed",
+      "email": "Your Email",
+      "emailOptional": "(Optional)",
+      "emailPlaceholder": "eg: ahmad.muhamed@gmail.com",
+      "city": "City",
+      "cityPlaceholder": "Choose city...",
+      "district": "District",
+      "districtPlaceholder": "Choose district...",
+      "location": "Your Current Location",
+      "getLocationBtn": "Get Location",
+      "uploadImages": "Upload Images",
+      "uploadHelp": "Select at least 4 images.",
+      "submitBtn": "Submit Post",
+      "submitting": "Submitting..."
+    },
+    "warnings": {
+      "images": "Please upload at least 4 images.",
+      "nameLong": "Name is too long (max 80 characters).",
+      "emailLong": "Email is too long (max 120 characters).",
+      "cityLong": "City/District names are too long.",
+      "locationLong": "Location input is too long.",
+      "required": "Fill all required fields (name, city, district, location, 4+ images).",
+      "emailInvalid": "Please enter a valid email address.",
+      "locationInvalid": "Location must be in 'lat,lng' format, e.g. 36.1909,44.0069",
+      "failed": "Failed to submit. Try again.",
+      "geolocationUnsupported": "Geolocation is not supported by your browser.",
+      "geolocationError": "Unable to retrieve your location."
+    }
+  },
+  "submitted": {
+    "title": "✅ Submission Received!",
+    "message": "Your post has been submitted successfully and is awaiting review.!",
+    "backHome": "Back to Home"
+  },
+  "offcanvas": {
+    "title": "City Category",
+    "categories": {
+      "Erbil": "Erbil",
+      "Sulaimani": "Sulaimani",
+      "Duhok": "Duhok",
+      "Halabja": "Halabja"
+    }
+  },
+  "explore": {
+    "welcome": "Welcome to {{city}}",
+    "noPosts": "No approved posts yet for this city.",
+    "distance": {
+      "your": "Your Distance",
+      "center": "City Center Distance"
+    },
+    "card": {
+      "city": "City",
+      "district": "District",
+      "uploadedBy": "Uploaded by",
+      "directions": "🧭 Directions in Google Maps",
+      "distance": {
+        "your": "Your Distance",
+        "cityCenter": "City center Distance",
+        "noLocation": "No location",
+        "unknownCenter": "City center unknown",
+        "km": "km"
+      },
+      "directionsTitle": {
+        "user": "Open Google Maps directions from your location",
+        "center": "Open Google Maps directions from {{city}} center"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 EKurdistan | Developed by",
+    "home": "Home",
+    "explore": "Explore",
+    "share": "Share",
+    "developer": "Hedi Shawqi"
+  },
+  "admin": {
+    "login": {
+      "portalTitle": "Admin Portal",
+      "portalSubtitle": "Administrator Login",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "rememberMe": "Remember me",
+      "signIn": "Sign in",
+      "signingIn": "Signing in...",
+      "invalid": "Invalid credentials",
+      "loading": "Loading..."
+    },
+    "filter": {
+      "default": "All Cities"
+    },
+    "pending": {
+      "table": {
+        "images": "Images",
+        "name": "Name",
+        "email": "Email",
+        "city": "City",
+        "district": "District",
+        "location": "Location",
+        "actions": "Actions"
+      },
+      "noPosts": "No pending posts.",
+      "accept": "Accept",
+      "delete": "Delete",
+      "onMap": "🧭 On Map"
+    },
+    "accepted": {
+      "noMatch": "No posts match.",
+      "alter": "Alter",
+      "delete": "Delete"
+    },
+    "editModal": {
+      "title": "Edit Post",
+      "noPost": "No post selected.",
+      "name": "Your Name",
+      "email": "Your Email (Optional)",
+      "location": "Your Current Location (lat,lng)",
+      "city": "City",
+      "district": "District",
+      "chooseCity": "Choose city...",
+      "chooseDistrict": "Choose district...",
+      "images": "Images",
+      "undo": "Undo all removals",
+      "noImages": "No images attached.",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "getLocation": "Get Location",
+      "locating": "Locating..."
+    }
+  },
+  "districts": {
+    "Hawler": "Hawler",
+    "Soran": "Soran",
+    "Shaqlawa": "Shaqlawa",
+    "Mergasor": "Mergasor",
+    "Choman": "Choman",
+    "Koye": "Koye",
+    "Rwanduz": "Rwanduz",
+    "Dashti Hawler": "Dashti Hawler",
+    "Slemani": "Slemani",
+    "Bazyan": "Bazyan",
+    "Penjwen": "Penjwen",
+    "Qaradax": "Qaradax",
+    "Sharbazher": "Sharbazher",
+    "Dukan": "Dukan",
+    "Ranya": "Ranya",
+    "Pashadar": "Pashadar",
+    "Penjwin": "Penjwin",
+    "Chemchemal": "Chemchemal",
+    "Duhok": "Duhok",
+    "Akre": "Akre",
+    "Zakho": "Zakho",
+    "Amadiya": "Amadiya",
+    "Simele": "Simele",
+    "Bardarash": "Bardarash",
+    "Shekhan": "Shekhan",
+    "Halbja": "Halbja",
+    "Khurmal": "Khurmal",
+    "Byara": "Byara",
+    "Tawella": "Tawella"
+  }
+}

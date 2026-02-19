@@ -12,7 +12,10 @@ import { createPost } from "../api/post";
 import Offcanvas from "./PublicpagesComponents/Offcanvas";
 import { useNavigate } from "react-router-dom";
 
+import { useTranslation } from "react-i18next";
+
 function UserPost() {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");                 // optional field
   const [location, setLocation] = useState("");           // "lat,lng" (e.g., "36.1909,44.0069")
@@ -150,7 +153,7 @@ navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true })
                 }}
                 className="text-success fw-bold mb-3"
               >
-                Share a Destination
+                {t("share.title")}
               </h3>
 
               {warning && <div className="alert alert-warning py-2">{warning}</div>}
@@ -188,7 +191,7 @@ navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true })
                     type="submit"
                     disabled={submitting || images.length < 4}
                   >
-                    {submitting ? "Submitting..." : "Submit Post"}
+                    {submitting ? t("share.form.submitting") : t("share.form.submitBtn")}
                   </button>
                 </div>
               </form>

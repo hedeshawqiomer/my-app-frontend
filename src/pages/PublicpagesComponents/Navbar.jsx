@@ -1,14 +1,24 @@
 // Navbar.jsx
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-//import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Navbar({ adminMode = false }) {
-  //const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { t, i18n } = useTranslation();
   const authed = !!user;
   const role = user?.role;
+
+  // Handle RTL direction
+  useEffect(() => {
+    document.documentElement.dir = i18n.language === "ku" ? "rtl" : "ltr";
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   return (
     <nav
@@ -20,7 +30,7 @@ export default function Navbar({ adminMode = false }) {
       <div className="container px-4 px-lg-5">
         {/* Brand */}
         <Link className="navbar-brand fs-3 mb-0" to="/">
-          🌍 EKurdistan
+          🌍 {t('navbar.brand')}
         </Link>
 
         {/* Hamburger button */}
@@ -43,7 +53,7 @@ export default function Navbar({ adminMode = false }) {
               <>
                 <li className="nav-item">
                   <Link className="nav-link" to="/">
-                    About
+                    {t('navbar.about')}
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -53,12 +63,12 @@ export default function Navbar({ adminMode = false }) {
                     data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasRight"
                   >
-                    Explore
+                    {t('navbar.explore')}
                   </a>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/user-post">
-                    Share Destination
+                     {t('navbar.share')}
                   </Link>
                 </li>
               </>
@@ -68,13 +78,13 @@ export default function Navbar({ adminMode = false }) {
               <>
                 <li className="nav-item">
                   <NavLink to="/admin/pending" className="nav-link">
-                    Pending
+                    {t('navbar.pending')}
                   </NavLink>
                 </li>
                 {role === "super" && (
                   <li className="nav-item">
                     <NavLink to="/admin/accepted" className="nav-link">
-                      Accepted
+                       {t('navbar.accepted')}
                     </NavLink>
                   </li>
                 )}
@@ -84,7 +94,7 @@ export default function Navbar({ adminMode = false }) {
             {!authed && adminMode && (
               <li className="nav-item">
                 <NavLink to="/admin/login" className="nav-link">
-                  Admin Login
+                   {t('navbar.login')}
                 </NavLink>
               </li>
             )}
@@ -114,12 +124,37 @@ export default function Navbar({ adminMode = false }) {
     }
   }}
 >
-  Logout
+  {t('navbar.logout')}
 </button>
 
 
               </li>
             )}
+            {/* Language Switcher */}
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                🌐 {i18n.language === "ku" ? "Kurdî" : "English"}
+              </a>
+              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li>
+                  <button className="dropdown-item" onClick={() => changeLanguage("en")}>
+                    🇺🇸 English
+                  </button>
+                </li>
+                <li>
+                  <button className="dropdown-item" onClick={() => changeLanguage("ku")}>
+                    🇹🇯 Kurdî
+                  </button>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>

@@ -15,6 +15,28 @@ html, body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Fix for Kurdish text being cut off */
+html[lang="ku"] body {
+  font-family: 'Tahoma', 'Arial', sans-serif; /* Use a font with better Kurdish support if available, or just generic */
+  line-height: 1.6;
+}
+html[lang="ku"] .navbar-nav .nav-link {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 22px !important; /* Reduced from 28px to prevent overlap */
+  padding-bottom: 5px; /* Add padding to prevent bottom cutoff */
+}
+html[lang="ku"] h1, html[lang="ku"] h2, html[lang="ku"] h3 {
+  line-height: 1.4; /* Ensure headings have enough height */
+  padding-bottom: 5px; /* Extra safety */
+}
+
+/* RTL Alignment Fixes for Close Icons */
+html[lang="ku"] .btn-close,
+html[lang="ku"] .navbar-toggler {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
 body { margin: 0; padding: 0; }
 footer { margin-bottom: 0; }
 

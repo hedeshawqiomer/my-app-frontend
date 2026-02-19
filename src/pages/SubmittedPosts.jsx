@@ -1,8 +1,9 @@
-// src/pages/SubmissionSuccess.jsx  (a.k.a. SubmittedPosts)
 import React, { useEffect } from "react";
 import { Link, useLocation, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function SubmittedPosts() {
+  const { t } = useTranslation();
   const location = useLocation();
 
   // Allow if we *just* navigated here from a real submission
@@ -24,9 +25,9 @@ export default function SubmittedPosts() {
   // Normal UI (unchanged)
   return (
     <div className="container py-5 text-center">
-      <h2 className="text-success mb-3">✅ Submission Received!</h2>
-      <p>Your post has been submitted successfully and is awaiting review.!</p>
-      <Link to="/" className="btn btn-success mt-4">Back to Home</Link>
+      <h2 className="text-success mb-3">{t("submitted.title")}</h2>
+      <p>{t("submitted.message")}</p>
+      <Link to="/" className="btn btn-success mt-4">{t("submitted.backHome")}</Link>
     </div>
   );
 }

@@ -1,5 +1,6 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import HomePage from "./pages/HomePage";
 import CityCategories from "./pages/CityCatgories";
@@ -18,6 +19,13 @@ const AcceptedPosts = lazy(() => import("./pages/admin/AllpostsDashboard.jsx"));
 const Loader = () => <div className="text-center py-5">Loading…</div>;
 
 export default function App() {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+    document.documentElement.dir = i18n.language === "ku" ? "rtl" : "ltr";
+  }, [i18n.language]);
+
   return (
     <Routes>
       {/* Public routes */}

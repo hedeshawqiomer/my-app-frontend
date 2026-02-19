@@ -3,11 +3,13 @@ import "glightbox/dist/css/glightbox.min.css";
 import { listPosts, acceptPost, deletePostById } from "../../api/post"; // fixed module
 import PendingPostRow from "./DashboardComponents/EachPenddingpost";         // unified name
 import DashboardHeader from "./DashboardComponents/BackendHeader";
+import { useTranslation } from "react-i18next";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const toAbs = (u) => (u?.startsWith("/") ? `${API_BASE}${u}` : u || "");
 
 function Pendingposts() {
+  const { t } = useTranslation();
   const [pendingPosts, setPendingPosts] = useState([]);
   const [cityFilter, setCityFilter] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,7 +51,7 @@ function Pendingposts() {
       setPendingPosts(data || []);
     } catch (e) {
       console.error(e);
-      setErr(e?.response?.data?.error || "Failed to load pending posts");
+      setErr(e?.response?.data?.error || t("admin.login.invalid")); // fallback
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ function Pendingposts() {
       </div>
 
       <div className="bg-white pt-3 pe-3 ps-3 p-md-4 rounded shadow">
-        {loading && <div className="alert alert-info mb-3">Loading…</div>}
+        {loading && <div className="alert alert-info mb-3">{t("admin.login.loading")}</div>}
         {err && <div className="alert alert-danger mb-3">{err}</div>}
 
         <div className="table-responsive">
@@ -75,13 +77,13 @@ function Pendingposts() {
             <thead className="table-success text-center">
               <tr>
                 <th>#</th>
-                <th style={{ minWidth: 260 }}>Images</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>City</th>
-                <th>District</th>
-                <th>Location</th>
-                <th>Actions</th>
+                <th style={{ minWidth: 260 }}>{t("admin.pending.table.images")}</th>
+                <th>{t("admin.pending.table.name")}</th>
+                <th>{t("admin.pending.table.email")}</th>
+                <th>{t("admin.pending.table.city")}</th>
+                <th>{t("admin.pending.table.district")}</th>
+                <th>{t("admin.pending.table.location")}</th>
+                <th>{t("admin.pending.table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -100,7 +102,7 @@ function Pendingposts() {
                 !loading && !err && (
                   <tr>
                     <td colSpan="8" className="text-center text-muted">
-                      No pending posts.
+                      {t("admin.pending.noPosts")}
                     </td>
                   </tr>
                 )

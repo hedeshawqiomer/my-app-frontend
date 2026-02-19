@@ -1,20 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
+import { useTranslation } from "react-i18next";
 
 import BackendHeader from "./DashboardComponents/BackendHeader";
 import PostCard from "./DashboardComponents/EachAcceptedPost";
 import EditPostModal from "./DashboardComponents/EachEditingAccpetpost";
-
 import {
   listPosts,
-  updatePostById,
   deletePostById,
+  updatePostById,
   deletePostImagesBulk,
   deletePostImageById,
-  deletePostImageByUrl,
+  deletePostImageByUrl
 } from "../../api/post";
-import { imgUrl } from "../../utills/URL";
+
+// ... (imports)
 
 const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
 const toAbs = (u) => {
@@ -32,6 +33,7 @@ const toAbs = (u) => {
   };
 
 export default function AcceptedPosts() {
+  const { t } = useTranslation();
   const [all, setAll] = useState([]);
   const [city, setCity] = useState("");
   const [editing, setEditing] = useState(null);
@@ -43,14 +45,20 @@ export default function AcceptedPosts() {
       setLoading(true);
       setErr("");
       const data = await listPosts({ status: "accepted", city: city || undefined });
-      const sorted = (data || []).slice().sort(
+      if (!Array.isArray(data)) throw new Error("Invalid API response format");
+
+      const sorted = data.slice().sort(
         (a, b) =>
           new Date(b.acceptedAt || b.createdAt || 0) -
           new Date(a.acceptedAt || a.createdAt || 0)
       );
       setAll(sorted);
     } catch (e) {
-      setErr(e?.response?.data?.error || "Failed to load accepted posts");
+      console.error("List posts error:", e);
+      // Detailed error reporting
+      const status = e?.response?.status;
+      const msg = e?.response?.data?.error || e?.message || "Failed to load accepted posts";
+      setErr(status ? `Error ${status}: ${msg}` : msg);
     } finally {
       setLoading(false);
     }
@@ -63,10 +71,17 @@ export default function AcceptedPosts() {
 
   // Bind GLightbox to currently-rendered DOM
   useEffect(() => {
-    const lb = GLightbox({ selector: ".glightbox", loop: true });
-    return () => { try { lb.destroy(); } catch {
-        //
-    } };
+    let lb;
+    try {
+      lb = GLightbox({ selector: ".glightbox", loop: true });
+    } catch (e) {
+      console.warn("GLightbox init failed:", e);
+    }
+    return () => {
+      if (lb) {
+        try { lb.destroy(); } catch { /* ignore */ }
+      }
+    };
   }, [data]);
 
   const onDelete = async (id) => {
@@ -83,11 +98,11 @@ export default function AcceptedPosts() {
       <div className="container-fluid mt-5 pt-5">
         <BackendHeader showCityFilter onCityChange={setCity} />
 
-        {loading && <div className="alert alert-info">Loading…</div>}
+        {loading && <div className="alert alert-info">{t("admin.login.loading")}</div>}
         {err && <div className="alert alert-danger">{err}</div>}
 
         {data.length === 0 ? (
-          <div className="alert alert-light border">No posts match.</div>
+          <div className="alert alert-light border">{t("admin.accepted.noMatch")}</div>
         ) : (
           <div className="row g-3">
             {data.map((p) => (
@@ -117,28 +132,34 @@ export default function AcceptedPosts() {
         post={editing}
         onClose={() => setEditing(null)}
         CITY_DISTRICTS={CITY_DISTRICTS}
-        imageUrlFor={imgUrl}
+        imageUrlFor={toAbs}
         onSave={async (patch, { removeImageIds = [], removeImageUrls = [] }) => {
           if (!editing) return;
-          await updatePostById(editing.id, patch);
+          try {
+            await updatePostById(editing.id, patch);
 
-          // Prefer single bulk call; fall back to per-image if not supported
-          if (removeImageIds.length || removeImageUrls.length) {
-            try {
-              await deletePostImagesBulk(editing.id, {
-                ids: removeImageIds,
-                urls: removeImageUrls,
-              });
-            } catch {
-              await Promise.all([
-                ...removeImageIds.map((id) => deletePostImageById(editing.id, id)),
-                ...removeImageUrls.map((url) => deletePostImageByUrl(editing.id, url)),
-              ]);
+            // Prefer single bulk call; fall back to per-image if not supported
+            if (removeImageIds.length || removeImageUrls.length) {
+              try {
+                await deletePostImagesBulk(editing.id, {
+                  ids: removeImageIds,
+                  urls: removeImageUrls,
+                });
+              } catch (innerErr) {
+                console.warn("Bulk delete failed, trying individual:", innerErr);
+                await Promise.all([
+                  ...removeImageIds.map((id) => deletePostImageById(editing.id, id)),
+                  ...removeImageUrls.map((url) => deletePostImageByUrl(editing.id, url)),
+                ]);
+              }
             }
-          }
 
-          setEditing(null);
-          await load();
+            setEditing(null);
+            await load();
+          } catch (e) {
+            console.error("Update failed:", e);
+            alert("Update failed: " + (e?.response?.data?.error || e.message));
+          }
         }}
       />
     </>

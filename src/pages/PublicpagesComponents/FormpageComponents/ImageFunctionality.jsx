@@ -1,5 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 function ImageUploader({ images, setImages, warning, setWarning }) {
+  const { t } = useTranslation();
   const MAX_IMAGES = 13;
   const MAX_SIZE_MB = 3000;
   const SUPPORTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -62,7 +65,7 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
 
   return (
     <div className="mb-3">
-      <label className="form-label">Upload Images</label>
+      <label className="form-label">{t("share.form.uploadImages")}</label>
       <input
         className="form-control"
         type="file"
@@ -71,7 +74,7 @@ function ImageUploader({ images, setImages, warning, setWarning }) {
         onChange={handleImageChange}
       />
       <small className="text-muted d-block mt-1">
-        Select at least 4 images.
+        {t("share.form.uploadHelp")}
       </small>
 
       <div className="d-flex flex-wrap gap-3 mt-3">

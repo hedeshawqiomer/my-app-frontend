@@ -1,7 +1,9 @@
 import React from "react";
 import { buildDirectionsUrl } from "../../../utills/maps";
+import { useTranslation } from "react-i18next";
 
 export default function PendingPostRow({ index, post, toAbs, onAccept, onDelete }) {
+  const { t } = useTranslation();
   return (
     <tr>
       <td>{index + 1}</td>
@@ -58,16 +60,16 @@ export default function PendingPostRow({ index, post, toAbs, onAccept, onDelete 
           target="_blank"
           rel="noreferrer"
           className="btn btn-outline-success btn-sm"
-          title="Get Directions"
+          title={t("admin.pending.onMap")}
         >
-          🧭 On Map
+          {t("admin.pending.onMap")}
         </a>
       </td>
 
       <td className="text-center">
         <div className="d-grid gap-2 gap-md-1">
-          <button className="btn btn-success btn-sm" onClick={onAccept}>Accept</button>
-          <button className="btn btn-danger btn-sm" onClick={onDelete}>Delete</button>
+          <button className="btn btn-success btn-sm" onClick={onAccept}>{t("admin.pending.accept")}</button>
+          <button className="btn btn-danger btn-sm" onClick={onDelete}>{t("admin.pending.delete")}</button>
         </div>
       </td>
     </tr>

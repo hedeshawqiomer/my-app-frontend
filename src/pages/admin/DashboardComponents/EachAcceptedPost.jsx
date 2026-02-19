@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function PostCard({ post: p, toAbs, onEdit, onDelete }) {
+  const { t } = useTranslation();
   const cover = Array.isArray(p.images) && p.images[0]?.url ? toAbs(p.images[0].url) : null;
 
   return (
@@ -28,7 +30,7 @@ export default function PostCard({ post: p, toAbs, onEdit, onDelete }) {
       <div className="card-body">
         <div className="d-flex gap-2 mb-2">
           <span className="badge bg-primary-subtle text-primary">
-            {p.city || "City"}
+            {p.city || t("admin.pending.table.city")}
           </span>
           {p.district && (
             <span className="badge bg-secondary-subtle text-secondary">
@@ -38,9 +40,9 @@ export default function PostCard({ post: p, toAbs, onEdit, onDelete }) {
         </div>
 
         <ul className="small text-muted list-unstyled mb-0">
-          {(p.name || p.uploaderName) && <li>Name: {p.name || p.uploaderName}</li>}
-          {p.email && <li>Email: {p.email}</li>}
-          {p.location && <li>Location: {p.location}</li>}
+          {(p.name || p.uploaderName) && <li>{t("admin.pending.table.name")}: {p.name || p.uploaderName}</li>}
+          {p.email && <li>{t("admin.pending.table.email")}: {p.email}</li>}
+          {p.location && <li>{t("admin.pending.table.location")}: {p.location}</li>}
         </ul>
       </div>
 
@@ -57,13 +59,13 @@ export default function PostCard({ post: p, toAbs, onEdit, onDelete }) {
             })
           }
         >
-          Alter
+          {t("admin.accepted.alter")}
         </button>
         <button
           className="btn btn-outline-danger btn-sm"
           onClick={() => onDelete(p.id)}
         >
-          Delete
+          {t("admin.accepted.delete")}
         </button>
       </div>
     </div>

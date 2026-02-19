@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function ExplanationCard() {
+  const { t } = useTranslation();
   return (
     <div className=" forExplanation card shadow p-4">
       <h3    style={{
@@ -11,17 +13,17 @@ function ExplanationCard() {
           WebkitTextFillColor: "transparent",
           backgroundClip: "text",
           color: "transparent",
-        }} className="text-success fw-bold mb-3">Why Share?</h3>
+        }} className="text-success fw-bold mb-3">{t("share.whyShareTitle")}</h3>
       <p>
-        Sharing your destination helps other explorers learn more about Kurdistan's hidden gems.
+        {t("share.whyShareText")}
       </p>
       <ul>
-        <li>Help promote tourism in your city.</li>
-        <li>Highlight unique places.</li>
-        <li>Contribute to a community-driven guide.</li>
+        <li>{t("share.whyShareList.1")}</li>
+        <li>{t("share.whyShareList.2")}</li>
+        <li>{t("share.whyShareList.3")}</li>
       </ul>
       <p className="text-muted mt-3 small">
-        We only require basic info. Images and location help others discover better!
+        {t("share.whyShareFooter")}
       </p>
     </div>
   );
