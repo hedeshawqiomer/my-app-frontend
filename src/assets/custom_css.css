@@ -320,3 +320,12 @@ hr.divider {
   background-color: #e4f31c; opacity: 1;
 }
 hr.divider-light { background-color: #fff; }
+/* Standard Gold Gradient Text */
+.text-gradient-gold {
+  font-family: sans-serif;
+  background: linear-gradient(to right, #d8cb16, #6d6603);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}

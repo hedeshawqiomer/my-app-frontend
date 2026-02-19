@@ -15,17 +15,7 @@ function MoreAbout() {
           </div>
 
           <div className="col-lg-6">
-            <h1
-              className="display-5 fw-bold lh-1 mb-4 fade-down"
-              style={{
-                fontFamily: "sans-serif",
-                background: "linear-gradient(to right, #d8cb16, #6d6603)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
+            <h1 className="display-5 fw-bold lh-1 mb-4 fade-down text-gradient-gold">
               Discover the Perfect Spot for Your Next Vacation
             </h1>
 

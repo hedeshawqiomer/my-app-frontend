@@ -95,17 +95,7 @@ export default function Recentcard() {
     <section className="px-3 container-fluid secondsec">
       <div className="container">
         <div className="row g-4">
-          <h1
-            className="display-4 fw-bold text-body-emphasis mt-1 mb-4 fs-1"
-            style={{
-              fontFamily: "sans-serif",
-              background: "linear-gradient(to right, #d8cb16, #6d6603)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
+          <h1 className="display-4 fw-bold text-body-emphasis mt-1 mb-4 fs-1 text-gradient-gold">
             Top Rated Resorts
           </h1>
 
