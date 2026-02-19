@@ -1,4 +1,5 @@
 import React from "react";
+import { buildDirectionsUrl } from "../../../utills/maps";
 
 export default function PendingPostRow({ index, post, toAbs, onAccept, onDelete }) {
   return (
@@ -53,12 +54,13 @@ export default function PendingPostRow({ index, post, toAbs, onAccept, onDelete 
 
       <td className="text-center">
         <a
-          href={`https://maps.google.com?q=${encodeURIComponent(post.location || "")}`}
+          href={buildDirectionsUrl(null, post.location)}
           target="_blank"
           rel="noreferrer"
           className="btn btn-outline-success btn-sm"
+          title="Get Directions"
         >
-          📍 On Map
+          🧭 On Map
         </a>
       </td>
 
