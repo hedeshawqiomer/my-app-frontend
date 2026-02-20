@@ -17,17 +17,20 @@ html, body {
 
 /* Fix for Kurdish text being cut off */
 html[lang="ku"] body {
-  font-family: 'Tahoma', 'Arial', sans-serif; /* Use a font with better Kurdish support if available, or just generic */
+  font-family: 'Noto Sans Arabic', sans-serif;
   line-height: 1.6;
 }
 html[lang="ku"] .navbar-nav .nav-link {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 22px !important; /* Reduced from 28px to prevent overlap */
-  padding-bottom: 5px; /* Add padding to prevent bottom cutoff */
+  font-family: 'Noto Sans Arabic', sans-serif;
+  font-size: 20px !important;
+  font-weight: 500;
+  padding-bottom: 5px;
 }
-html[lang="ku"] h1, html[lang="ku"] h2, html[lang="ku"] h3 {
-  line-height: 1.4; /* Ensure headings have enough height */
-  padding-bottom: 5px; /* Extra safety */
+html[lang="ku"] h1, html[lang="ku"] h2, html[lang="ku"] h3, 
+html[lang="ku"] h4, html[lang="ku"] h5, html[lang="ku"] h6,
+html[lang="ku"] .btn, html[lang="ku"] .navbar-brand {
+  font-family: 'Noto Sans Arabic', sans-serif !important;
+  line-height: 1.5;
 }
 
 /* RTL Alignment Fixes for Close Icons */
@@ -357,3 +360,33 @@ hr.divider-light { background-color: #fff; }
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
+/* Professional Language Switcher Styling */
+.lang-dropdown-menu {
+  min-width: 180px !important;
+  margin-top: 10px !important;
+  animation: fadeInDropdown 0.2s ease-out;
+}
+
+@keyframes fadeInDropdown {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lang-dropdown-item {
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.lang-dropdown-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(4px);
+  border-color: #eee;
+}
+
+.lang-dropdown-item.active {
+  background-color: #e8f0fe !important;
+  color: #0d6efd !important;
+  border-color: #d0e1fd;
+}
+
+/* Optional: Add a little arrow to the dropdown if desired, or keep it clean */

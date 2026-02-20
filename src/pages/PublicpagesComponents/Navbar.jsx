@@ -1,6 +1,7 @@
 // Navbar.jsx
 import React, { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import FlagIcon from "../../components/FlagIcon";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
@@ -48,7 +49,7 @@ export default function Navbar({ adminMode = false }) {
 
         {/* Links */}
         <div className="collapse navbar-collapse" id="navbarResponsive">
-          <ul className="navbar-nav ms-auto my-2 my-lg-0">
+          <ul className="navbar-nav ms-auto my-2 my-lg-0 align-items-center gap-3">
             {!adminMode && (
               <>
                 <li className="nav-item">
@@ -133,24 +134,32 @@ export default function Navbar({ adminMode = false }) {
             {/* Language Switcher */}
             <li className="nav-item dropdown">
               <a
-                className="nav-link dropdown-toggle"
+                className="nav-link d-flex align-items-center gap-2"
                 href="#"
                 id="navbarDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                🌐 {i18n.language === "ku" ? "Kurdî" : "English"}
+                <FlagIcon country={i18n.language} width={30} height={22} className="shadow-sm rounded-1" />
               </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+              <ul className="dropdown-menu lang-dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 p-2" aria-labelledby="navbarDropdown">
                 <li>
-                  <button className="dropdown-item" onClick={() => changeLanguage("en")}>
-                    🇺🇸 English
+                  <button 
+                    className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 mb-1 ${i18n.language === 'en' ? 'active bg-light' : ''}`} 
+                    onClick={() => changeLanguage("en")}
+                  >
+                    <FlagIcon country="en" width={24} height={18} className="shadow-sm rounded-1" />
+                    <span className="fw-semibold">English</span>
                   </button>
                 </li>
                 <li>
-                  <button className="dropdown-item" onClick={() => changeLanguage("ku")}>
-                    🇹🇯 Kurdî
+                  <button 
+                    className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 ${i18n.language === 'ku' ? 'active bg-light' : ''}`} 
+                    onClick={() => changeLanguage("ku")}
+                  >
+                    <FlagIcon country="ku" width={24} height={18} className="shadow-sm rounded-1" />
+                    <span className="fw-semibold">Kurdish</span>
                   </button>
                 </li>
               </ul>
