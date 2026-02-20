@@ -16,7 +16,12 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     fallbackLng: 'en',
-    debug: true,
+    debug: false,
+    
+    // Explicitly configure backend load path for Netlify production stability
+    backend: {
+      loadPath: '/locales/{{lng}}/translation.json',
+    },
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
