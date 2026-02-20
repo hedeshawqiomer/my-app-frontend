@@ -1,7 +1,9 @@
 import React from "react";
 
 export default function FlagIcon({ country, width = 24, height = 16, className = "" }) {
-  if (country === "ku") {
+  const normalizedCountry = country?.split('-')[0]?.toLowerCase();
+
+  if (normalizedCountry === "ku") {
     return (
       <svg
         width={width}
@@ -27,7 +29,7 @@ export default function FlagIcon({ country, width = 24, height = 16, className =
     );
   }
 
-  if (country === "en") {
+  if (normalizedCountry === "en") {
     // Union Jack (Standard for English language)
     return (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width={width} height={height} className={className}>
