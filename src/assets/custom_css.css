@@ -202,6 +202,8 @@ img, video { max-width: 100%; height: auto; }
   background: linear-gradient(to right, #d8cb16, #6d6603);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; color: transparent; font-weight: bold;
+  padding-top: 0.1em;
+  padding-bottom: 0.2em;
 }
 .gradient-btn {
   background: linear-gradient(to right, #d8cb16, #6d6603);
@@ -247,6 +249,25 @@ img, video { max-width: 100%; height: auto; }
 }
 @media (max-width: 575.98px) { .navbar-nav .nav-link { font-size: 18px; } }
 @media (min-width: 576px) and (max-width: 991.98px) { .navbar-nav .nav-link { font-size: 22px; } }
+
+/* Logo Hover Animations */
+.navbar-brand {
+  transition: transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+.navbar-brand:hover {
+  transform: translateY(-2px);
+}
+.navbar-brand .earth-icon {
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-block;
+  -webkit-text-fill-color: initial !important;
+  color: initial !important;
+}
+.navbar-brand:hover .earth-icon {
+  transform: rotate(360deg) scale(1.1);
+}
 
 .navbar-nav .nav-link:hover {
   background: linear-gradient(to right, #d8cb16, #6d6603);
@@ -359,6 +380,8 @@ hr.divider-light { background-color: #fff; }
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+  padding-top: 0.1em;
+  padding-bottom: 0.2em;
 }
 /* Professional Language Switcher Styling */
 .lang-dropdown-menu {

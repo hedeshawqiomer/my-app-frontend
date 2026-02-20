@@ -1,10 +1,12 @@
 // src/components/PublicpagesComponents/ExplorepageComponents/CardCoursel.jsx
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 
 export default function CardCoursel({ post }) {
+  const { t } = useTranslation();
   const modalId = `modal-${post.id}`;
   const carouselId = `carousel-${post.id}`;
   const images = (post.images && post.images.length ? post.images : ["/pictures/placeholder.png"]);
@@ -14,7 +16,9 @@ export default function CardCoursel({ post }) {
       <div className="modal-dialog modal-dialog-centered modal-lg">{/* stock classes only */}
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title" id={`${modalId}-label`}>{post.city} — Gallery</h5>
+            <h5 className="modal-title" id={`${modalId}-label`}>
+              {post.city ? t(`offcanvas.categories.${post.city}`, post.city) : ""} — Gallery
+            </h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
           </div>
 

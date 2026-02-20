@@ -35,8 +35,15 @@ function buildDirectionsUrl(userLoc, cityCenter, destStr, travelMode = "driving"
 }
 
 export default function CitySection({ city, posts }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [userLocation, setUserLocation] = useState(null);
+
+  const formatNumber = (num) => {
+    if (i18n.language === 'ku') {
+      return new Intl.NumberFormat('ar-IQ').format(num);
+    }
+    return num.toFixed(2);
+  };
 
   useEffect(() => {
     if (!("geolocation" in navigator)) return;
@@ -85,7 +92,7 @@ export default function CitySection({ city, posts }) {
                 postLL.lat,
                 postLL.lng
               );
-              distanceText = `${km.toFixed(2)} km`;
+              distanceText = `${formatNumber(km)} ${t("explore.card.distance.km")}`;
             }
           }
 
@@ -101,9 +108,11 @@ export default function CitySection({ city, posts }) {
                   data-bs-target={`#modal-${post.id}`} // matches CardCoursel modal id
                 />
                 <div className="card-body">
-                  <h5 className="card-title text-success fw-bold">{t("explore.card.city")}: {post.city}</h5>
+                  <h5 className="card-title text-success fw-bold">
+                    {t("explore.card.city")}: {post.city ? t(`offcanvas.categories.${post.city}`, post.city) : ""}
+                  </h5>
                   <p className="card-text text-muted mb-1">
-                    <strong>{t("explore.card.district")}:</strong> {post.district}
+                    <strong>{t("explore.card.district")}:</strong> {post.district ? t(`districts.${post.district}`, post.district) : ""}
                   </p>
                   {/* 👇 dynamic label */}
                   <p className="card-text text-muted mb-1">
@@ -127,8 +136,13 @@ export default function CitySection({ city, posts }) {
                     {t("explore.card.directions")}
                   </a>
 
-                  <small className="text-muted">
-                    {new Date(post.acceptedAt || post.createdAt).toLocaleDateString()}
+                  <small 
+                    className="text-muted d-block" 
+                    style={{ textAlign: i18n.language === 'ku' ? 'left' : 'right' }}
+                  >
+                    {post.createdAt || post.acceptedAt
+                      ? new Date(post.acceptedAt || post.createdAt).toLocaleDateString(i18n.language === 'ku' ? 'ar-IQ' : 'en-US')
+                      : "—"}
                   </small>
                 </div>
               </div>

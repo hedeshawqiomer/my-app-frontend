@@ -31,7 +31,7 @@ export default function Navbar({ adminMode = false }) {
       <div className="container px-4 px-lg-5">
         {/* Brand */}
         <Link className="navbar-brand fs-3 mb-0" to="/">
-          🌍 {t('navbar.brand')}
+           <span className="earth-icon">🌍</span> {t('navbar.brand')}
         </Link>
 
         {/* Hamburger button */}

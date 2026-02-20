@@ -162,7 +162,7 @@ export default function Recentcard() {
                          {t("explore.card.city")}:
                        </h5>
                        <span className="fs-5 fw-bold text-body">
-                         {t(post.city, { defaultValue: post.city })}
+                         {post.city ? t(`offcanvas.categories.${post.city}`, post.city) : ""}
                        </span>
                     </div>
 
@@ -171,7 +171,7 @@ export default function Recentcard() {
                         {t("explore.card.district")}:
                       </strong>
                       <span className="text-muted">
-                        {t(post.district, { defaultValue: post.district })}
+                        {post.district ? t(`districts.${post.district}`, post.district) : ""}
                       </span>
                     </div>
 
@@ -204,7 +204,7 @@ export default function Recentcard() {
                     </a>
                   </div>
 
-                  <div className="card-footer d-flex justify-content-between align-items-center py-2 px-4">
+                  <div className="card-footer d-flex justify-content-end align-items-center py-2 px-4">
                     <small className="text-body-secondary">
                       {post.createdAt
                         ? new Date(post.createdAt).toLocaleDateString(i18n.language === 'ku' ? 'ar-IQ' : 'en-US')
@@ -223,7 +223,9 @@ export default function Recentcard() {
                   <div className="modal-dialog modal-dialog-centered modal-lg">
                     <div className="modal-content">
                       <div className="modal-header">
-                        <h5 className="modal-title">{post.city} - Gallery</h5>
+                        <h5 className="modal-title">
+                          {post.city ? t(`offcanvas.categories.${post.city}`, post.city) : ""} - Gallery
+                        </h5>
                         <button
                           type="button"
                           className="btn-close"
