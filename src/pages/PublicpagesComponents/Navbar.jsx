@@ -34,18 +34,56 @@ export default function Navbar({ adminMode = false }) {
            <span className="earth-icon">🌍</span> {t('navbar.brand')}
         </Link>
 
-        {/* Hamburger button */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarResponsive"
-          aria-controls="navbarResponsive"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <div className="d-flex align-items-center gap-3">
+          {/* Language Switcher (Always Visible) */}
+          <ul className="navbar-nav flex-row">
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link d-flex align-items-center gap-2 p-0"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <FlagIcon country={i18n.language} width={30} height={22} className="shadow-sm rounded-1" />
+              </a>
+              <ul className="dropdown-menu lang-dropdown-menu dropdown-menu-end position-absolute border-0 shadow-lg rounded-3 p-2" aria-labelledby="navbarDropdown">
+                <li>
+                  <button 
+                    className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 mb-1 ${i18n.language === 'en' ? 'active bg-light' : ''}`} 
+                    onClick={() => changeLanguage("en")}
+                  >
+                    <FlagIcon country="en" width={24} height={18} className="shadow-sm rounded-1" />
+                    <span className="fw-semibold">English</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 ${i18n.language === 'ku' ? 'active bg-light' : ''}`} 
+                    onClick={() => changeLanguage("ku")}
+                  >
+                    <FlagIcon country="ku" width={24} height={18} className="shadow-sm rounded-1" />
+                    <span className="fw-semibold">Kurdish</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          {/* Hamburger button */}
+          <button
+            className="navbar-toggler border-0 px-1"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarResponsive"
+            aria-controls="navbarResponsive"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+        </div>
 
         {/* Links */}
         <div className="collapse navbar-collapse" id="navbarResponsive">
@@ -131,39 +169,6 @@ export default function Navbar({ adminMode = false }) {
 
               </li>
             )}
-            {/* Language Switcher */}
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link d-flex align-items-center gap-2"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FlagIcon country={i18n.language} width={30} height={22} className="shadow-sm rounded-1" />
-              </a>
-              <ul className="dropdown-menu lang-dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 p-2" aria-labelledby="navbarDropdown">
-                <li>
-                  <button 
-                    className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 mb-1 ${i18n.language === 'en' ? 'active bg-light' : ''}`} 
-                    onClick={() => changeLanguage("en")}
-                  >
-                    <FlagIcon country="en" width={24} height={18} className="shadow-sm rounded-1" />
-                    <span className="fw-semibold">English</span>
-                  </button>
-                </li>
-                <li>
-                  <button 
-                    className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 ${i18n.language === 'ku' ? 'active bg-light' : ''}`} 
-                    onClick={() => changeLanguage("ku")}
-                  >
-                    <FlagIcon country="ku" width={24} height={18} className="shadow-sm rounded-1" />
-                    <span className="fw-semibold">Kurdish</span>
-                  </button>
-                </li>
-              </ul>
-            </li>
           </ul>
         </div>
       </div>
