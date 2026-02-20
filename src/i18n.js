@@ -1,12 +1,22 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
+
+// Import translation files directly to bundle them with Vite
+import translationEN from '../public/locales/en/translation.json';
+import translationKU from '../public/locales/ku/translation.json';
+
+// Create resources object
+const resources = {
+  en: {
+    translation: translationEN
+  },
+  ku: {
+    translation: translationKU
+  }
+};
 
 i18n
-  // load translation using http -> see /public/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/public/locales)
-  // learn more: https://github.com/i18next/i18next-http-backend
-  .use(Backend)
   // detect user language
   // learn more: https://github.com/i18next/i18next-browser-languagedetector
   .use(LanguageDetector)
@@ -15,13 +25,9 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
+    resources, // Inject translations directly here
     fallbackLng: 'en',
     debug: false,
-    
-    // Explicitly configure backend load path for Netlify production stability
-    backend: {
-      loadPath: '/locales/{{lng}}/translation.json',
-    },
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
