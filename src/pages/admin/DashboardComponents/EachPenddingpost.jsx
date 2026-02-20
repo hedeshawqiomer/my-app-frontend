@@ -51,8 +51,8 @@ export default function PendingPostRow({ index, post, toAbs, onAccept, onDelete 
 
       <td>{post.name || post.uploaderName || "-"}</td>
       <td>{post.email || "-"}</td>
-      <td>{post.city || "-"}</td>
-      <td>{post.district || "-"}</td>
+      <td>{post.city ? t(`offcanvas.categories.${post.city}`, post.city) : "-"}</td>
+      <td>{post.district ? t(`districts.${post.district}`, post.district) : "-"}</td>
 
       <td className="text-center">
         <a

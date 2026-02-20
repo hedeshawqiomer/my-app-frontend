@@ -30,11 +30,11 @@ export default function PostCard({ post: p, toAbs, onEdit, onDelete }) {
       <div className="card-body">
         <div className="d-flex gap-2 mb-2">
           <span className="badge bg-primary-subtle text-primary">
-            {p.city || t("admin.pending.table.city")}
+            {p.city ? t(`offcanvas.categories.${p.city}`, p.city) : t("admin.pending.table.city")}
           </span>
           {p.district && (
             <span className="badge bg-secondary-subtle text-secondary">
-              {p.district}
+              {t(`districts.${p.district}`, p.district)}
             </span>
           )}
         </div>

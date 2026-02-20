@@ -59,6 +59,7 @@ export function AuthProvider({ children }) {
     return wanted.has(String(user.role || "").toLowerCase());
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const value = useMemo(() => ({ user, booted, login, logout, hasRole }), [user, booted]);
 
   if (!booted) {

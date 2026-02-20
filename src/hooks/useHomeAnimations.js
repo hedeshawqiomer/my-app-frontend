@@ -88,9 +88,9 @@ export function useHomeAnimations() {
     return () => {
       document.removeEventListener("scroll", navbarShrink);
       navLinks.forEach((link) => link.removeEventListener("click", onLinkClick));
-      try { cardObserver.disconnect(); } catch {}
-      try { secondSecObserver.disconnect(); } catch {}
-      try { heroObserver && heroObserver.disconnect(); } catch {}
+      try { cardObserver.disconnect(); } catch { /* ignore */ }
+      try { secondSecObserver.disconnect(); } catch { /* ignore */ }
+      try { heroObserver && heroObserver.disconnect(); } catch { /* ignore */ }
     };
   }, []);
 }

@@ -57,6 +57,7 @@ function Pendingposts() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load(); }, [cityFilter]);
 
   const onAccept = async (id) => { await acceptPost(id); await load(); };

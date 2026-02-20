@@ -64,6 +64,7 @@ export default function AcceptedPosts() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load(); }, [city]);
 
   // Filter view data by city (keeps sort)
