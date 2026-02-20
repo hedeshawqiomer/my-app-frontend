@@ -9,7 +9,6 @@ export default function EditPostModal({
   CITY_DISTRICTS = {},
   imageUrlFor,           // optional normalizer
 }) {
-  console.log("EditPostModal rendering", { open, postFn: !!post, cityDistrictsKeys: Object.keys(CITY_DISTRICTS) });
   const { t } = useTranslation();
   const [form, setForm] = useState({
     name: "", email: "", location: "", city: "", district: "",
