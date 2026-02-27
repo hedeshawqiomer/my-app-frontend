@@ -17,8 +17,9 @@ export default function Navbar({ adminMode = false }) {
     document.documentElement.lang = i18n.language;
   }, [i18n.language]);
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+  const toggleLanguage = () => {
+    const next = i18n.language?.startsWith("ku") ? "en" : "ku";
+    i18n.changeLanguage(next);
   };
 
   return (
@@ -36,39 +37,15 @@ export default function Navbar({ adminMode = false }) {
 
         {/* Right Side: Language Switcher and Hamburger */}
         <div className="d-flex align-items-center gap-2">
-          {/* Language Switcher - ALWAYS VISIBLE */}
-          <div className="dropdown">
-            <a
-              className="nav-link d-flex align-items-center px-2 py-0"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <FlagIcon country={i18n.language} width={30} height={22} className="shadow-sm rounded-1" />
-            </a>
-            <ul className="dropdown-menu lang-dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 p-2 position-absolute" aria-labelledby="navbarDropdown">
-              <li>
-                <button 
-                  className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 mb-1 ${i18n.language === 'en' ? 'active bg-light' : ''}`} 
-                  onClick={() => changeLanguage("en")}
-                >
-                  <FlagIcon country="en" width={24} height={18} className="shadow-sm rounded-1" />
-                  <span className="fw-semibold">English</span>
-                </button>
-              </li>
-              <li>
-                <button 
-                  className={`dropdown-item lang-dropdown-item d-flex align-items-center gap-3 p-2 rounded-2 ${i18n.language === 'ku' ? 'active bg-light' : ''}`} 
-                  onClick={() => changeLanguage("ku")}
-                >
-                  <FlagIcon country="ku" width={24} height={18} className="shadow-sm rounded-1" />
-                  <span className="fw-semibold">Kurdish</span>
-                </button>
-              </li>
-            </ul>
-          </div>
+          {/* Language Toggle - ALWAYS VISIBLE */}
+          <button
+            className="btn btn-link nav-link d-flex align-items-center px-2 py-0 border-0"
+            onClick={toggleLanguage}
+            aria-label="Switch language"
+            style={{ background: 'none' }}
+          >
+            <FlagIcon country={i18n.language?.startsWith("ku") ? "en" : "ku"} width={30} height={22} className="shadow-sm rounded-1" />
+          </button>
 
           {/* Hamburger button */}
           <button
