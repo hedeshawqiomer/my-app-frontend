@@ -36,14 +36,12 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-  try { await apiLogout(); } catch { /* ignore */ }
-    setUser(null);
     try { await apiLogout(); } catch { /* ignore */ }
+    setUser(null);
     // tell the interceptor we are intentionally logging out
     try { sessionStorage.setItem("loggingOut", "1"); } catch {
       // ignore
     }
-    setUser(null);
     // clear any stale "next" and land on login by REPLACING history
     try { sessionStorage.removeItem("postLoginNext"); } catch {
       // ignore
