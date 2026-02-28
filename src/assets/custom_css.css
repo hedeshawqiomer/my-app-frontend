@@ -181,10 +181,17 @@ img, video { max-width: 100%; height: auto; }
   border-radius: 1rem;
   box-shadow: 0 0 10px rgba(0,0,0,.08);
   opacity: 0; transform: translateY(40px);
-  transition: opacity .6s ease-out, transform .6s ease-out;
+  transition: opacity .6s ease-out, transform .6s ease-out, box-shadow .3s ease;
   transition-delay: var(--delay, 0s);
+  border: none;
 }
 .custom-card.visible { opacity: 1; transform: translateY(0); }
+.custom-card.visible:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,.15);
+  transition-delay: 0s; /* No delay on hover */
+  transition-duration: 0.3s; /* Quicker hover */
+}
 
 .custom-img {
   height: 220px; object-fit: cover;

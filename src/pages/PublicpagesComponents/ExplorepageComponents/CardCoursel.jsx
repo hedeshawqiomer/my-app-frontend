@@ -17,7 +17,8 @@ export default function CardCoursel({ post }) {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id={`${modalId}-label`}>
-              {post.city ? t(`offcanvas.categories.${post.city}`, post.city) : ""} — Gallery
+              {post.city ? t(`offcanvas.categories.${post.city}`, post.city) : ""}
+              {post.district ? ` - ${t(`districts.${post.district}`, post.district)}` : ""}
             </h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
           </div>
