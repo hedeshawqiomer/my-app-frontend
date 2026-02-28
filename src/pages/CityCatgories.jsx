@@ -8,7 +8,6 @@ import CitySection from "./PublicpagesComponents/ExplorepageComponents/CitySecti
 import { listPublicPosts } from "../api/public";
 import "../assets/custom_css2.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 function CityCategories() {
   const location = useLocation();

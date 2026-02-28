@@ -1,4 +1,3 @@
-// src/utills/cityCenters.js
 // src/utills/CityCenter.js
 const cityCenters = {
   Erbil:        {lat:36.189333,lng:44.009794},

@@ -3,8 +3,8 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 // Import translation files directly to bundle them with Vite
-import translationEN from '../public/locales/en/translation.json';
-import translationKU from '../public/locales/ku/translation.json';
+import translationEN from './locales/en/translation.json';
+import translationKU from './locales/ku/translation.json';
 
 // Create resources object
 const resources = {

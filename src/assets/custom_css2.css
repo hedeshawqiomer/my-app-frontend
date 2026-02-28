@@ -41,12 +41,5 @@
   object-position: center;
 }
 
-/* (KEEP your navbar/button styles as you had them) */
 
-/* IMPORTANT: REMOVE these (if present) to avoid breaking default carousel:
-   .modal-dialog.custom-carousel-modal { ... }
-   .carousel-img { ... }
-   .modal-dialog.custom-carousel-modal .carousel-item { ... }
-   .modal-dialog.custom-carousel-modal .carousel-item .carousel-img { ... }
-   any @media blocks that set fixed heights on carousel
-*/
+
