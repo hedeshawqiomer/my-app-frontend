@@ -46,6 +46,6 @@ export async function deletePostImageById(postId, imageId) {
   return data;
 }
 export async function deletePostImagesBulk(postId, { ids = [], urls = [] } = {}) {
-  const { data } = await api.post(`/posts/${postId}/images:delete`, { ids, urls });
+  const { data } = await api.post(`/posts/${postId}/images/bulk-delete`, { ids, urls });
   return data;
 }
