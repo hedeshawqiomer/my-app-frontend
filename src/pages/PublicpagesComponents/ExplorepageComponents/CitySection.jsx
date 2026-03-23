@@ -8,31 +8,7 @@ import { getDistanceFromLatLonInKm } from "../../../utills/Geolocation";
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const toAbs = (u) => (u?.startsWith?.("/") ? `${API_BASE}${u}` : u || "");
 
-/* ----- helpers ----- */
-function parseLatLng(input) {
-  if (!input || typeof input !== "string") return null;
-  const m = input.trim().match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
-  if (!m) return null;
-  const lat = parseFloat(m[1]);
-  const lng = parseFloat(m[3]);
-  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
-  return { lat, lng };
-}
-
-// Build Google Maps directions URL
-function buildDirectionsUrl(userLoc, cityCenter, destStr, travelMode = "driving") {
-  const destLatLng = parseLatLng(destStr);
-  const base = "https://www.google.com/maps/dir/?api=1";
-  const destinationParam = destLatLng
-    ? `destination=${destLatLng.lat},${destLatLng.lng}`
-    : `destination=${encodeURIComponent(destStr || "")}`;
-
-  const origin = userLoc ?? cityCenter; // fallback to city center
-  const originParam = origin ? `origin=${origin.lat},${origin.lng}` : null;
-
-  const modeParam = `travelmode=${encodeURIComponent(travelMode)}`;
-  return [base, originParam, destinationParam, modeParam].filter(Boolean).join("&");
-}
+import { buildDirectionsUrl, parseLatLng } from "../../../utills/maps";
 
 export default function CitySection({ city, posts }) {
   const { t, i18n } = useTranslation();
@@ -80,20 +56,24 @@ export default function CitySection({ city, posts }) {
       <div className="cards-wrapper">
         {posts.map((post) => {
           const postLL = parseLatLng(post.location);
+          const originIsUser = !!userLocation;
+          const distanceLabel = originIsUser 
+            ? t("explore.distance.your", "Distance from your location") 
+            : t("explore.distance.center", "Distance from City Center");
+            
+          const origin = userLocation ?? center;
           let distanceText = "—";
-          let distanceLabel = userLocation ? t("explore.distance.your") : t("explore.distance.center");
-
-          if (postLL) {
-            const origin = userLocation ?? center;
-            if (origin) {
-              const km = getDistanceFromLatLonInKm(
-                origin.lat,
-                origin.lng,
-                postLL.lat,
-                postLL.lng
-              );
-              distanceText = `${formatNumber(km)} ${t("explore.card.distance.km")}`;
-            }
+          
+          if (postLL && origin) {
+            const km = getDistanceFromLatLonInKm(
+              origin.lat, origin.lng,
+              postLL.lat, postLL.lng
+            );
+            distanceText = `${formatNumber(km)} ${t("explore.card.distance.km", "km")}`;
+          } else if (!postLL) {
+            distanceText = t("explore.card.distance.noLocation", "Unknown Location");
+          } else if (!origin) {
+            distanceText = t("explore.card.distance.unknownCenter", "Unknown City Center");
           }
 
           return (
@@ -123,7 +103,7 @@ export default function CitySection({ city, posts }) {
                   </p>
 
                   <a
-                    href={buildDirectionsUrl(userLocation, center, post.location)}
+                    href={buildDirectionsUrl(userLocation, post.location)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-success w-100 mb-3"
