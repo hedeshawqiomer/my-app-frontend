@@ -194,7 +194,7 @@ export default function Recentcard() {
                     </div>
                     
                     <a
-                      href={buildDirectionsUrl(userLocation, post.location)}
+                      href={buildDirectionsUrl(originLL, post.location)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-success w-100"
