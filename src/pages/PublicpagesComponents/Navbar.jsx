@@ -22,6 +22,14 @@ export default function Navbar({ adminMode = false }) {
     i18n.changeLanguage(next);
   };
 
+  const handleNavClick = () => {
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.getElementById('navbarResponsive');
+    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+      navbarToggler?.click();
+    }
+  };
+
   return (
     <nav
       className={`navbar navbar-expand-lg navbar-light fixed-top pt-3 pb-1 ${
@@ -67,7 +75,7 @@ export default function Navbar({ adminMode = false }) {
             {!adminMode && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
+                  <Link className="nav-link" to="/" onClick={handleNavClick}>
                     {t('navbar.about')}
                   </Link>
                 </li>
@@ -77,12 +85,13 @@ export default function Navbar({ adminMode = false }) {
                     href="#!"
                     data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasRight"
+                    onClick={handleNavClick}
                   >
                     {t('navbar.explore')}
                   </a>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/user-post">
+                  <Link className="nav-link" to="/user-post" onClick={handleNavClick}>
                      {t('navbar.share')}
                   </Link>
                 </li>
@@ -92,13 +101,13 @@ export default function Navbar({ adminMode = false }) {
             {adminMode && authed && (
               <>
                 <li className="nav-item">
-                  <NavLink to="/admin/pending" className="nav-link">
+                  <NavLink to="/admin/pending" className="nav-link" onClick={handleNavClick}>
                     {t('navbar.pending')}
                   </NavLink>
                 </li>
                 {role === "super" && (
                   <li className="nav-item">
-                    <NavLink to="/admin/accepted" className="nav-link">
+                    <NavLink to="/admin/accepted" className="nav-link" onClick={handleNavClick}>
                        {t('navbar.accepted')}
                     </NavLink>
                   </li>
@@ -108,7 +117,7 @@ export default function Navbar({ adminMode = false }) {
 
             {!authed && adminMode && (
               <li className="nav-item">
-                <NavLink to="/admin/login" className="nav-link">
+                <NavLink to="/admin/login" className="nav-link" onClick={handleNavClick}>
                    {t('navbar.login')}
                 </NavLink>
               </li>
@@ -120,6 +129,7 @@ export default function Navbar({ adminMode = false }) {
 <button
   className="btn btn-sm btn-outline-secondary"
   onClick={async () => {
+    handleNavClick();
     try {
       await logout();                           // server logout + clear user in context
     } finally {
