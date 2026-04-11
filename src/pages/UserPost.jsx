@@ -11,28 +11,22 @@ import ExplanationCard from "./PublicpagesComponents/FormpageComponents/Explanat
 import { createPost } from "../api/post";
 import Offcanvas from "./PublicpagesComponents/Offcanvas";
 import { useNavigate } from "react-router-dom";
+import { CITY_DISTRICTS } from "../utills/cityDistricts";
 
 import { useTranslation } from "react-i18next";
 
 function UserPost() {
   const { t } = useTranslation();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");                 // optional field
-  const [location, setLocation] = useState("");           // "lat,lng" (e.g., "36.1909,44.0069")
+  const [email, setEmail] = useState(""); // optional field
+  const [location, setLocation] = useState(""); // "lat,lng" (e.g., "36.1909,44.0069")
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [showDistrict, setShowDistrict] = useState(false);
-  const [images, setImages] = useState([]);               // [{file, previewUrl}] or [File]
+  const [images, setImages] = useState([]); // [{file, previewUrl}] or [File]
   const [warning, setWarning] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-
-  const cityDistricts = {
-    Erbil: ["Hawler", "Soran", "Shaqlawa", "Mergasor", "Choman", "Koye", "Rwanduz", "Dashti Hawler"],
-    Sulaimani: ["Slemani", "Bazyan", "Penjwen", "Qaradax", "Sharbazher", "Dukan", "Ranya", "Pashadar", "Penjwin", "Chemchemal"],
-    Duhok: ["Duhok", "Akre", "Zakho", "Amadiya", "Simele", "Bardarash", "Shekhan"],
-    Halabja: ["Halbja", "Khurmal", "Byara", "Tawella"],
-  };
 
   // Navbar shrink on scroll (UX polish)
   useEffect(() => {
@@ -83,7 +77,9 @@ function UserPost() {
 
     // --- Required checks (use sanitized values) ---
     if (!_name || !_city || !_district || !_location) {
-      setWarning("Fill all required fields (name, city, district, location, 4+ images).");
+      setWarning(
+        "Fill all required fields (name, city, district, location, 4+ images).",
+      );
       return;
     }
 
@@ -106,8 +102,14 @@ function UserPost() {
     try {
       // Send sanitized values
       await createPost(
-        { name: _name, email: _email, city: _city, district: _district, location: _location },
-        files
+        {
+          name: _name,
+          email: _email,
+          city: _city,
+          district: _district,
+          location: _location,
+        },
+        files,
       );
 
       // Clear the form
@@ -119,9 +121,11 @@ function UserPost() {
       setShowDistrict(false);
       setImages([]);
 
-sessionStorage.setItem("fromSubmission", "true"); // optional: survive redirects
-navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true });
-
+      sessionStorage.setItem("fromSubmission", "true"); // optional: survive redirects
+      navigate("/submitted-posts", {
+        state: { fromSubmission: true },
+        replace: true,
+      });
     } catch (err) {
       console.error(err);
       setWarning(err?.response?.data?.error || "Failed to submit. Try again.");
@@ -156,7 +160,9 @@ navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true })
                 {t("share.title")}
               </h3>
 
-              {warning && <div className="alert alert-warning py-2">{warning}</div>}
+              {warning && (
+                <div className="alert alert-warning py-2">{warning}</div>
+              )}
 
               <form onSubmit={handleSubmit} noValidate>
                 <BasicInfo
@@ -182,7 +188,7 @@ navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true })
                   setDistrict={setDistrict}
                   showDistrict={showDistrict}
                   setShowDistrict={setShowDistrict}
-                  cityDistricts={cityDistricts}
+                  cityDistricts={CITY_DISTRICTS}
                 />
 
                 <div className="d-grid">
@@ -191,7 +197,9 @@ navigate("/submitted-posts", { state: { fromSubmission: true }, replace: true })
                     type="submit"
                     disabled={submitting || images.length < 4}
                   >
-                    {submitting ? t("share.form.submitting") : t("share.form.submitBtn")}
+                    {submitting
+                      ? t("share.form.submitting")
+                      : t("share.form.submitBtn")}
                   </button>
                 </div>
               </form>
